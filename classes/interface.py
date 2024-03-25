@@ -8,6 +8,10 @@ screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 
+# Charger l'image de fond
+background_image = pygame.image.load("image/bg.jpg")
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+
 # Couleurs
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -16,7 +20,7 @@ LIGHT_GREY = (220, 220, 220)
 GREEN = (0, 255, 0)
 
 # Police de caractère
-font = pygame.font.SysFont("calibri", 14)
+font = pygame.font.SysFont("calibri", 16)
 
 class Interface:
     def __init__(self):
@@ -24,30 +28,27 @@ class Interface:
         self.active_field = None
         self.text_input = {name: False for name in self.form_data.keys()}
         self.cursor_timer = 0
-        self.frame_rect = pygame.Rect(screen_width // 2 - 250, 70, 500, 380)
         self.connexion_button = pygame.Rect(screen_width // 2 - 150, 470, 100, 40)
         self.inscription_button = pygame.Rect(screen_width // 2 + 50, 470, 100, 40)
 
     def render(self):
-        screen.fill((0, 128, 128))  # Couleur de fond
-        pygame.draw.rect(screen, GREEN, (50, 20, 700, 40))  # Cadre vert pour le titre
-        title_text = font.render("Bienvenue à mon compte", True, BLACK)
-        screen.blit(title_text, (screen_width // 2 - title_text.get_width() // 2, 30))
-        pygame.draw.rect(screen, WHITE, self.frame_rect, border_radius=10)  # Cadre avec bordure arrondie
+        # Afficher l'image de fond
+        screen.blit(background_image, (0, 0))
+
         for i, (name, text) in enumerate(self.form_data.items()):
             background = WHITE if self.active_field == name else GREY
-            input_box = pygame.Rect(screen_width // 2 - 200, 100 + i*50, 400, 40)
-            pygame.draw.rect(screen, background, input_box)
+            input_box = pygame.Rect(screen_width // 2 - 180, 270 + i * 50, 360, 30)
+            pygame.draw.rect(screen, background, input_box, border_radius=5)
             if text == "" and not self.text_input[name]:
-                text_surface = font.render(f"{name}: ", True, BLACK)
+                text_surface = font.render(f"{name.capitalize()}: ", True, BLACK)
             else:
                 text_surface = font.render(f"{text}", True, BLACK)
-            screen.blit(text_surface, (input_box.x + 5, input_box.y + 5))
+            screen.blit(text_surface, (input_box.x + 10, input_box.y + 5))
             if self.active_field == name and self.cursor_timer % 60 < 30:
-                cursor_rect = pygame.Rect(input_box.x + font.size(text)[0] + 5, input_box.y + 5, 2, font.get_height())
+                cursor_rect = pygame.Rect(input_box.x + font.size(text)[0] + 10, input_box.y + 5, 2, font.get_height())
                 pygame.draw.rect(screen, BLACK, cursor_rect)
-        pygame.draw.rect(screen, GREEN, self.connexion_button)  # Bouton Connexion
-        pygame.draw.rect(screen, GREEN, self.inscription_button)  # Bouton Inscription
+        pygame.draw.rect(screen, GREEN, self.connexion_button, border_radius=5)
+        pygame.draw.rect(screen, GREEN, self.inscription_button, border_radius=5)
         conn_text = font.render("Connexion", True, BLACK)
         screen.blit(conn_text, (self.connexion_button.x + 15, self.connexion_button.y + 10))
         insc_text = font.render("Inscription", True, BLACK)
@@ -69,7 +70,7 @@ class Interface:
 
     def check_click(self, position):
         for name in self.form_data.keys():
-            field_rect = pygame.Rect(screen_width // 2 - 200, 100 + list(self.form_data.keys()).index(name) * 50, 400, 40)
+            field_rect = pygame.Rect(screen_width // 2 - 180, 270 + list(self.form_data.keys()).index(name) * 50, 360, 30)
             if field_rect.collidepoint(position):
                 self.active_field = name
                 if not self.text_input[name]:
@@ -90,4 +91,9 @@ class Interface:
             clock.tick(60)
             self.cursor_timer += 1
 
-Interface().run()
+    @staticmethod
+    def create_instance():
+        return Interface()
+
+if __name__ == "__main__":
+    Interface().run()

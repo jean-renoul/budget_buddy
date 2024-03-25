@@ -1,5 +1,6 @@
 import pygame
 import sys
+from interface import*
 
 pygame.init()
 
@@ -103,6 +104,8 @@ class InscriptionPage:
         print("Compte créé avec succès !")
 
     def go_back(self):
+        Interface.create_instance()
+
         print("Retour à la page principale")
 
     def run(self):
