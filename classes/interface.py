@@ -20,7 +20,7 @@ font = pygame.font.SysFont("calibri", 14)
 
 class Interface:
     def __init__(self):
-        self.form_data = {"Nom d'utilisateur": "", "Prénom": "", "Email": "", "Mot de passe": ""}
+        self.form_data = {"Lastname": "", "Firstname": "", "Email": "", "Password": ""}
         self.active_field = None
         self.text_input = {name: False for name in self.form_data.keys()}
         self.cursor_timer = 0
