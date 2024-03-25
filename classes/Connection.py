@@ -1,5 +1,5 @@
-from Db import Db
-from Users import Users
+from classes.Db import Db
+from classes.Users import Users
 import string
 
 class Connection:
@@ -20,7 +20,6 @@ class Connection:
 
     def check_password_size(self):
         if len(self.password) >= 10:
-            print ("Password has enough characters")
             return True
         else:
             print ("Password does not have enough characters")
@@ -28,7 +27,6 @@ class Connection:
         
     def check_password_number(self):
         if any(char.isdigit() for char in self.password):
-            print ("Password has a number")
             return True
         else:
             print ("Password does not have a number")
@@ -36,7 +34,6 @@ class Connection:
         
     def check_password_uppercase(self):
         if any(char.isupper() for char in self.password):
-            print ("Password has an uppercase letter")
             return True
         else:
             print ("Password does not have an uppercase letter")
@@ -44,7 +41,6 @@ class Connection:
         
     def check_password_lowercase(self):
         if any(char.islower() for char in self.password):
-            print ("Password has a lowercase letter")
             return True
         else:
             print ("Password does not have a lowercase letter")
@@ -52,17 +48,43 @@ class Connection:
         
     def check_password_special_character(self):
         if any(char in string.punctuation for char in self.password):
-            print ("Password has a special character")
             return True
         else:
             print ("Password does not have a special character")
             return False
         
+    def check_existing_email(self):
+        query = "SELECT * FROM users WHERE email = %s"
+        params = (self.email,)
+        result = self.db.fetch(query, params)
+        if result:
+            print ("Email already exists")
+            return True
+        else:
+            return False
+        
+    def check_existing_password(self):
+        query = "SELECT * FROM users WHERE password = %s"
+        params = (self.password,)
+        result = self.db.fetch(query, params)
+        if result:
+            print ("Password already exists")
+            return True
+        else:
+            return False
+        
+    def check_existing_user(self):
+        if self.check_existing_email() or self.check_existing_password():
+            return True
+        else:
+            return False
+        
     def register(self):
-        self.user = Users(self.lastname, self.firstname, self.email, self.password)
-        query = "INSERT INTO users (lastname, firstname, email, password, balance) VALUES (%s, %s, %s, %s, %s)"
-        params = (self.user.last_name, self.user.first_name, self.user.email, self.user.password, self.user.balance)
-        self.db.executeQuery(query, params)
+        if self.password_verification() and not self.check_existing_user():
+            self.user = Users(self.lastname, self.firstname, self.email, self.password)
+            query = "INSERT INTO users (lastname, firstname, email, password, balance) VALUES (%s, %s, %s, %s, %s)"
+            params = (self.user.last_name, self.user.first_name, self.user.email, self.user.password, self.user.balance)
+            self.db.executeQuery(query, params)
 
     def login(self):
         query = "SELECT * FROM users WHERE lastname = %s AND firstname = %s AND email = %s AND password = %s"
@@ -74,8 +96,7 @@ class Connection:
             return True
         else:
             print ("User not found")
-            return False
-        
+            return False       
 
 
 if __name__ == "__main__":
