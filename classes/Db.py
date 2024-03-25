@@ -33,4 +33,4 @@ class Db:
         return result
     
 if __name__ == "__main__":
-    db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "budget-buddy")
+    db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")

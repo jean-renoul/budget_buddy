@@ -8,29 +8,18 @@ class Connection:
         self.firstname = firstname
         self.email = email
         self.password = password
-        self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "budget-buddy")
+        self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
 
     def password_verification(self):
-        if len(self.user.password) >= 10:
-            print ("Password has enough characters")
-            if any(char.isdigit() for char in self.user.password):
-                print ("Password has a number")
-                if any(char.isupper() for char in self.user.password):
-                    print ("Password has an uppercase letter")
-                    if any(char.islower() for char in self.user.password):
-                        print ("Password has a lowercase letter")
-                        if any(char in string.punctuation for char in self.user.password):
-                            print ("Password has a special character")
-                            return True
-                        else:
-                            print ("Password does not have a special character")
-                    else:
-                        print ("Password does not have a lowercase letter")
-                else:
-                    print ("Password does not have an uppercase letter")
+        if self.check_password_size() and self.check_password_number() and self.check_password_uppercase() and self.check_password_lowercase() and self.check_password_special_character():
+            print ("Password is valid")
+            return True
+        else:
+            print ("Password is invalid")
+            return False
 
     def check_password_size(self):
-        if len(self.user.password) >= 10:
+        if len(self.password) >= 10:
             print ("Password has enough characters")
             return True
         else:
@@ -38,7 +27,7 @@ class Connection:
             return False
         
     def check_password_number(self):
-        if any(char.isdigit() for char in self.user.password):
+        if any(char.isdigit() for char in self.password):
             print ("Password has a number")
             return True
         else:
@@ -46,7 +35,7 @@ class Connection:
             return False
         
     def check_password_uppercase(self):
-        if any(char.isupper() for char in self.user.password):
+        if any(char.isupper() for char in self.password):
             print ("Password has an uppercase letter")
             return True
         else:
@@ -54,7 +43,7 @@ class Connection:
             return False
         
     def check_password_lowercase(self):
-        if any(char.islower() for char in self.user.password):
+        if any(char.islower() for char in self.password):
             print ("Password has a lowercase letter")
             return True
         else:
@@ -62,11 +51,33 @@ class Connection:
             return False
         
     def check_password_special_character(self):
+        if any(char in string.punctuation for char in self.password):
+            print ("Password has a special character")
+            return True
+        else:
+            print ("Password does not have a special character")
+            return False
         
+    def register(self):
+        self.user = Users(self.lastname, self.firstname, self.email, self.password)
+        query = "INSERT INTO users (lastname, firstname, email, password, balance) VALUES (%s, %s, %s, %s, %s)"
+        params = (self.user.last_name, self.user.first_name, self.user.email, self.user.password, self.user.balance)
+        self.db.executeQuery(query, params)
+
+    def login(self):
+        query = "SELECT * FROM users WHERE lastname = %s AND firstname = %s AND email = %s AND password = %s"
+        params = (self.lastname, self.firstname, self.email, self.password)
+        result = self.db.fetch(query, params)
+        if result:
+            print ("User found")
+            self.user = Users(result[0][1], result[0][2], result[0][3], result[0][4], result[0][5])
+            return True
+        else:
+            print ("User not found")
+            return False
         
 
 
 if __name__ == "__main__":
-    user = Users("Doe", "John", "John.Doe@gmail.com", "Password10")
-    connection = Connection(user)
-    print (connection.password_verification())
+    connection = Connection("Doe", "John", "John.Doe@gmail.com", "Password10!")
+    print (connection.login())
