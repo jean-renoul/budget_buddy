@@ -1,27 +1,27 @@
-
 import pygame
 import sys
 
 pygame.init()
 
 # Paramètres de l'écran
-screen_width = 600
+screen_width = 500
 screen_height = 700
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Chargez l'image de fond
-background_image = pygame.image.load("images/Simple Login Page Mobile Prototype.png")
+background_image = pygame.image.load("images/Login.png")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))  # Redimensionnez l'image
 
 # Couleurs
-WHITE = (255, 255, 255)
+WHITE = (237, 190, 164)  # Couleur des cases d'écriture avant clic #EDBEA4
 BLACK = (0, 0, 0)
 GREY = (200, 200, 200)
 LIGHT_GREY = (220, 220, 220)
-GREEN = (0, 255, 0)
+BUTTON_COLOR = (154, 208, 211)  # Couleur des boutons #9AD0D3
+BUTTON_TEXT_COLOR = BLACK
 
 # Police de caractère
-font = pygame.font.SysFont("calibri", 14)
+font = pygame.font.Font("images/survivant.ttf", 16)
 
 class Interface:
     def __init__(self):
@@ -35,8 +35,8 @@ class Interface:
         last_input_box_y = self.y_offset + 200 + (len(self.form_data) - 1) * 50
 
         # Coordonnées des boutons de connexion et d'inscription
-        self.connexion_button = pygame.Rect(screen_width // 2 + 50, last_input_box_y + 50, 100, 40)  # Bouton Connexion
-        self.inscription_button = pygame.Rect(screen_width // 2 - 150, last_input_box_y + 50, 100, 40)  # Bouton Inscription
+        self.connexion_button = pygame.Rect(screen_width // 2 + 50, last_input_box_y + 50, 200, 40)  # Bouton Connexion
+        self.inscription_button = pygame.Rect(screen_width // 2 - 250, last_input_box_y + 50, 200, 40)  # Bouton Inscription
 
     def render(self):
         # Dessiner l'image de fond
@@ -45,7 +45,7 @@ class Interface:
         for i, (name, text) in enumerate(self.form_data.items()):
             background = WHITE if self.active_field == name else GREY
             input_box = pygame.Rect(screen_width // 2 - 200, self.y_offset + 200 + i*50, 400, 40)  # Utilisation du décalage
-            pygame.draw.rect(screen, background, input_box)
+            pygame.draw.rect(screen, background, input_box, border_radius=10)  # Coins arrondis
             if text == "" and not self.text_input[name]:
                 text_surface = font.render(f"{name}: ", True, BLACK)
             else:
@@ -56,15 +56,15 @@ class Interface:
                 pygame.draw.rect(screen, BLACK, cursor_rect)
             # Ajout d'une bordure si le champ est actif
             if self.active_field == name:
-                pygame.draw.rect(screen, GREEN, input_box, 2)
+                pygame.draw.rect(screen, BUTTON_COLOR, input_box, 2)
 
         # Affichage des boutons de connexion et d'inscription avec des effets visuels
-        pygame.draw.rect(screen, GREEN, self.connexion_button)  # Bouton Connexion
-        pygame.draw.rect(screen, GREEN, self.inscription_button)  # Bouton Inscription
-        conn_text = font.render("Connexion", True, BLACK)
-        screen.blit(conn_text, (self.connexion_button.x + 15, self.connexion_button.y + 10))
-        insc_text = font.render("Inscription", True, BLACK)
-        screen.blit(insc_text, (self.inscription_button.x + 15, self.inscription_button.y + 10))
+        pygame.draw.rect(screen, BUTTON_COLOR, self.connexion_button, border_radius=5)  # Bouton Connexion
+        pygame.draw.rect(screen, BUTTON_COLOR, self.inscription_button, border_radius=5)  # Bouton Inscription
+        conn_text = font.render("Connexion", True, BUTTON_TEXT_COLOR)
+        screen.blit(conn_text, (self.connexion_button.x + 50, self.connexion_button.y + 10))
+        insc_text = font.render("Inscription", True, BUTTON_TEXT_COLOR)
+        screen.blit(insc_text, (self.inscription_button.x + 50, self.inscription_button.y + 10))
 
     def handle_events(self):
         for event in pygame.event.get():
