@@ -96,7 +96,7 @@ class Connection:
             return True
         else:
             print ("User not found")
-            return False       
+            return False
 
 
 if __name__ == "__main__":
