@@ -6,6 +6,8 @@ class Db:
         self.user = user
         self.password = password
         self.database = database
+        self.connection = None
+        self.cursor = None
 
     def connect(self):
         self.connection = mysql.connector.connect(
@@ -17,7 +19,8 @@ class Db:
         self.cursor = self.connection.cursor()
 
     def disconnect(self):
-        self.connection.close()
+        if self.connection:
+            self.connection.close()
 
     def executeQuery(self, query, params=None):
         self.connect()
@@ -31,6 +34,12 @@ class Db:
         result = self.cursor.fetchall()
         self.disconnect()
         return result
-    
+
+    def is_connected(self):
+        if self.connection:
+            return self.connection.is_connected()
+        else:
+            return False
+
 if __name__ == "__main__":
-    db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "budget-buddy")
+    db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
