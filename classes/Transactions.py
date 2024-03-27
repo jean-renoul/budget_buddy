@@ -12,4 +12,4 @@ class Transactions:
 
     def get_transactions(self):
         query = "SELECT * FROM transactions WHERE name = %s"
-        return self.db.fetch(query, (self.name,))        
+        return self.db.fetch(query, (self.name,))

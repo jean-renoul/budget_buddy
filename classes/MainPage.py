@@ -19,8 +19,6 @@ class MainPage:
 
 
 
-        
-
     def run(self):
         pygame.display.flip()
         self.clock.tick(60)
