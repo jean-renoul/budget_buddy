@@ -1,5 +1,5 @@
-from classes.Db import Db
-from classes.Users import Users
+from Db import Db
+from classes.Back.Users import Users
 import string
 
 class Connection:

@@ -1,6 +1,6 @@
-from classes.Connection import Connection
-from classes.Login import Login
-from classes.registration import Registration
+from classes.Back.Connection import Connection
+from classes.Front.Login import Login
+from classes.Front.registration import Registration
 import pygame
 
 pygame.init()
