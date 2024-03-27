@@ -1,5 +1,5 @@
-from classes.Db import Db
-from classes.Users import Users
+from Db import Db
+from classes.Back.Users import Users
 import string
 
 class Connection:
@@ -88,24 +88,12 @@ class Connection:
         else:
             return False
         
-    def check_email_format(self):
-        if "@" in self.email and "." in self.email:
-            print ("Email is valid")
-            return True
-        else:
-            print ("Email is not valid")
-            self.error = "Email is not valid"
-            return False
-        
     def register(self):
-        if self.password_verification() and self.check_email_format() and not self.check_existing_user():
+        if self.password_verification() and not self.check_existing_user():
             self.user = Users(self.lastname, self.firstname, self.email, self.password)
             query = "INSERT INTO users (lastname, firstname, email, password, balance) VALUES (%s, %s, %s, %s, %s)"
             params = (self.user.last_name, self.user.first_name, self.user.email, self.user.password, self.user.balance)
             self.db.executeQuery(query, params)
-            return True
-        else:
-            return False
 
     def login(self):
         query = "SELECT * FROM users WHERE lastname = %s AND firstname = %s AND email = %s AND password = %s"
@@ -121,4 +109,5 @@ class Connection:
 
 
 if __name__ == "__main__":
-    connection = Connection("Doe", "John", "allo", "Password10!")
+    connection = Connection("Doe", "John", "John.Doe@gmail.com", "Password10!")
+    print (connection.login())
