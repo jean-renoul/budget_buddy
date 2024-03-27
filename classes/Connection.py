@@ -9,6 +9,7 @@ class Connection:
         self.email = email
         self.password = password
         self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
+        self.error = ""
 
     def password_verification(self):
         if self.check_password_size() and self.check_password_number() and self.check_password_uppercase() and self.check_password_lowercase() and self.check_password_special_character():
@@ -23,6 +24,7 @@ class Connection:
             return True
         else:
             print ("Password does not have enough characters")
+            self.error = "Password does not have enough characters"
             return False
         
     def check_password_number(self):
@@ -30,6 +32,7 @@ class Connection:
             return True
         else:
             print ("Password does not have a number")
+            self.error = "Password does not have a number"
             return False
         
     def check_password_uppercase(self):
@@ -37,6 +40,7 @@ class Connection:
             return True
         else:
             print ("Password does not have an uppercase letter")
+            self.error = "Password does not have an uppercase letter"
             return False
         
     def check_password_lowercase(self):
@@ -44,6 +48,7 @@ class Connection:
             return True
         else:
             print ("Password does not have a lowercase letter")
+            self.error = "Password does not have a lowercase letter"
             return False
         
     def check_password_special_character(self):
@@ -51,6 +56,7 @@ class Connection:
             return True
         else:
             print ("Password does not have a special character")
+            self.error = "Password does not have a special character"
             return False
         
     def check_existing_email(self):
@@ -59,6 +65,7 @@ class Connection:
         result = self.db.fetch(query, params)
         if result:
             print ("Email already exists")
+            self.error = "Email already exists"
             return True
         else:
             return False
@@ -69,12 +76,14 @@ class Connection:
         result = self.db.fetch(query, params)
         if result:
             print ("Password already exists")
+            self.error = "Password already exists"
             return True
         else:
             return False
         
     def check_existing_user(self):
         if self.check_existing_email() or self.check_existing_password():
+            self.error = "User already exists"
             return True
         else:
             return False

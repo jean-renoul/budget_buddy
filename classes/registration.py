@@ -5,9 +5,6 @@ import sys
 
 class Registration:
     def __init__(self):
-
-        pygame.init()
-
         # Paramètres de l'écran
         self.screen_width = 600
         self.screen_height = 700
@@ -27,13 +24,19 @@ class Registration:
         self.TEXT_INPUT_BORDER_WIDTH = 2  # Épaisseur de la bordure des cases de saisie
 
         # Police de caractère
-        self.font = pygame.font.Font("images/survivant.ttf", 20)  # Utilisation de la police Bobby Jones
+        self.font = pygame.font.Font(None, 20)  # Utilisation de la police Bobby Jones
 
         self.form_data = {"Lastname": "", "Firstname": "", "Email": "", "Password": "", "Confirm Password": ""}
         self.active_field = None
         self.text_input = {name: False for name in self.form_data.keys()}
         self.cursor_timer = 0
         self.input_box_offset_y = 30  # Décalage vertical des cases de saisie
+        self.message_text = None  # Track the error message text
+        self.message_timer = 0     # Timer to control the duration of error message display
+        self.message_duration = 2000  # Duration to display the error message in milliseconds
+        self.clock = pygame.time.Clock()
+        self.back_to_login = False
+        self.registration_attempt = False
 
     def render(self):
         # Affichage de l'image de fond
@@ -56,6 +59,12 @@ class Registration:
             if self.active_field == name and self.cursor_timer % 60 < 30:
                 cursor_rect = pygame.Rect(input_box.left + 10 + text_surface.get_width(), input_box.centery - self.font.get_height() // 2, 2, self.font.get_height())
                 pygame.draw.rect(self.screen, self.BLACK, cursor_rect)
+
+            if self.message_text:
+                self.screen.blit(self.message_text, (self.screen_width // 2 - self.message_text.get_width() // 2, 670))
+                # Check if the duration has elapsed
+                if pygame.time.get_ticks() - self.message_timer >= self.message_duration:
+                    self.message_text = None  # Clear the error message
 
         # Dessiner les boutons
         button_width = 150
@@ -94,9 +103,12 @@ class Registration:
         return_rect = pygame.Rect(button_x + button_width + 20, self.screen_height - 100, button_width, button_height)
 
         if create_account_rect.collidepoint(position):
-            self.create_account()
+            if self.form_data["Password"] != self.form_data["Confirm Password"]:
+                self.message("Passwords do not match")
+            else:
+                self.registration_attempt = True
         elif return_rect.collidepoint(position):
-            self.go_back()
+            self.back_to_login = True
         else:
             # Vérifier si les champs de formulaire sont cliqués
             for name in self.form_data.keys():
@@ -108,19 +120,13 @@ class Registration:
                     return
             self.active_field = None
 
-    def create_account(self):
-        print("Compte créé avec succès !")
-
-    def go_back(self):
-        print("Retour à la page principale")
+    def message(self, message):
+        self.message_text = self.font.render(message, True, self.BLACK)
+        self.message_timer = pygame.time.get_ticks()  # Start the timer
 
     def run(self):
-        clock = pygame.time.Clock()
-        while True:
-            self.handle_events()
-            self.render()
-            pygame.display.flip()
-            clock.tick(60)
-            self.cursor_timer += 1
-
-Registration().run()
+        self.handle_events()
+        self.render()
+        pygame.display.flip()
+        self.clock.tick(60)
+        self.cursor_timer += 1
