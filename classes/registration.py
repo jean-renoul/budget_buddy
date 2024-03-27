@@ -48,11 +48,17 @@ class Registration:
             input_box = pygame.Rect(self.screen_width // 2 - 200, 300 + i * 50 + self.input_box_offset_y, 400, 40)
             pygame.draw.rect(self.screen, background, input_box, border_radius=10)  # Border radius ajouté ici
             pygame.draw.rect(self.screen, self.TEXT_INPUT_BORDER_COLOR, input_box, self.TEXT_INPUT_BORDER_WIDTH, border_radius=10)  # Bordure de la case de saisie
+
             if text == "" and not self.text_input[name]:
                 text_surface = self.font.render(f"{name}: ", True, self.BLACK)
                 self.screen.blit(text_surface, (input_box.left + 10, input_box.centery - text_surface.get_height() // 2))
             else:
-                text_surface = self.font.render(f"{text}", True, self.BLACK)
+                if name == "Password" or name == "Confirm Password":
+                    # Render "*" characters instead of the actual password
+                    masked_text = "*" * len(text)
+                    text_surface = self.font.render(masked_text, True, self.BLACK)
+                else:
+                    text_surface = self.font.render(f"{text}", True, self.BLACK)
                 self.screen.blit(text_surface, (input_box.left + 10, input_box.centery - text_surface.get_height() // 2))
 
             # Dessiner le curseur
