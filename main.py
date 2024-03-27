@@ -1,5 +1,5 @@
 from classes.Connection import Connection
-from classes.interface import Login
+from classes.Login import Login
 from classes.registration import Registration
 import pygame
 
