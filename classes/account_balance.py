@@ -1,19 +1,6 @@
 import mysql.connector
 
-class Db:
-    def __init__(self, host, user, password, database):
-        self.connection = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database
-        )
-        self.cursor = self.connection.cursor()
-
-    def fetch(self, query, params=None):
-        self.cursor.execute(query, params or ())
-        return self.cursor.fetchall()
-
+from Db import Db
 
 class AccountBalance:
     def __init__(self, name):
