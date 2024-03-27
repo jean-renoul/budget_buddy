@@ -62,8 +62,12 @@ class Login:
             self.screen.blit(text_surface, (input_box.x + 5, input_box.y + 5))
             
             if self.active_field == name and self.cursor_timer % 60 < 30:
-                cursor_rect = pygame.Rect(input_box.x + self.font.size(text)[0] + 5, input_box.y + 5, 2, self.font.get_height())
-                pygame.draw.rect(self.screen, self.BLACK, cursor_rect)
+                if name == "Password" and text != "":
+                    cursor_rect = pygame.Rect(input_box.x + self.font.size(masked_text)[0] + 5, input_box.y + 5, 2, self.font.get_height())
+                    pygame.draw.rect(self.screen, self.BLACK, cursor_rect)
+                else:
+                    cursor_rect = pygame.Rect(input_box.x + self.font.size(text)[0] + 5, input_box.y + 5, 2, self.font.get_height())
+                    pygame.draw.rect(self.screen, self.BLACK, cursor_rect)
             # Ajout d'une bordure si le champ est actif
             if self.active_field == name:
                 pygame.draw.rect(self.screen, self.BUTTON_COLOR, input_box, 2)
