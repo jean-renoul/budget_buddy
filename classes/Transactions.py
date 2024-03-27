@@ -1,73 +1,22 @@
-import mysql.connector
-from Connection import Connection
 
-class Transactions:
-    def __init__(self, connection):
-        self.connection = connection
+from datetime import datetime
+from Db import Db
+from BalanceUpdater import BalanceUpdater
 
-    def execute_transaction(self):
-        if self.connection.login():
-            user_balance = self.connection.get_user_balance()
-            if user_balance is not None:
-                print("Balance de l'utilisateur:", user_balance)
-                name = "Nouvelle transaction"
-                date = "2024-03-26"
-                category = "Alimentation"
-                description = "Achat au supermarché"
-                amount = 40.00
-                type = "dépense"
-                new_transaction = Transactions(self.connection, name, date, category, description, amount, type)
-                if new_transaction.add_transaction():
-                    print("Nouvelle balance de l'utilisateur après la transaction:", self.connection.get_user_balance())
-                else:
-                    print("La transaction a échoué.")
-            else:
-                print("Impossible de récupérer la balance de l'utilisateur.")
-        else:
-            print("Échec de la connexion.")
+class TransactionManager:
+    def __init__(self):
+        self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
+        self.balance_updater = BalanceUpdater()
 
-    def add_transaction(self, name, date, category, description, amount, type):
-        try:
-            if self.connection.db.is_connected():
-                cursor = self.connection.db.cursor()
-
-                if amount <= 0:
-                    print("Le montant de la transaction doit être positif.")
-                    return False
-                if type not in ['dépense', 'revenu']:
-                    print("Le type de transaction doit être 'dépense' ou 'revenu'.")
-                    return False
-
-                cursor.execute("INSERT INTO transactions (name, date, category, description, amount, type) VALUES (%s, %s, %s, %s, %s, %s)",
-                                (name, date, category, description, amount, type))
-                self.connection.db.commit()
-
-                # Mettre à jour la balance de l'utilisateur en fonction du type de transaction
-                if type == 'dépense':
-                    updated_balance = self.connection.get_user_balance() - amount
-                else:
-                    updated_balance = self.connection.get_user_balance() + amount
-                
-                # Mettre à jour la balance de l'utilisateur dans la base de données
-                self.connection.update_user_balance(updated_balance)
-
-                print("La transaction a été ajoutée avec succès.")
-                print("Nouvelle balance de l'utilisateur:", updated_balance)  # Imprimer la nouvelle balance
-
-                return True
-
-        except mysql.connector.Error as e:
-            print("Erreur lors de l'ajout de la transaction :", e)
-            return False
-        
-        finally:
-            pass
+    def add_transaction(self, user_id, name, description, category, amount, transaction_type, date=None):
+        date = date if date else datetime.now().date()
+        query = "INSERT INTO transactions (user_id, name, description, category, amount, type, date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        params = (user_id, name, description, category, amount, transaction_type, date)
+        self.db.executeQuery(query, params)
+        # Mettre à jour la balance de l'utilisateur
+        self.balance_updater.update_balance(user_id, amount, transaction_type)
 
 if __name__ == "__main__":
-    connection = Connection("Doe", "John", "John.Doe@gmail.com", "Password10!")
-
-    # Créer une instance de la classe Transactions
-    transaction_handler = Transactions(connection)
-
-    # Appeler la méthode execute_transaction() pour exécuter la transaction
-    transaction_handler.execute_transaction()
+    transaction_manager = TransactionManager()
+    # Exemple d'utilisation : ajout d'une transaction
+    transaction_manager.add_transaction(user_id=4, name="Shopping", description="Tacos", category="Food", amount=20.0, transaction_type="expense")

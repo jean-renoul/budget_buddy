@@ -1,15 +1,13 @@
 import pygame
 import sys
 
-class Interface:
+class Login:
     def __init__(self):
         self.form_data = {"Lastname": "", "Firstname": "", "Email": "", "Password": ""}
         self.active_field = None
         self.text_input = {name: False for name in self.form_data.keys()}
         self.cursor_timer = 0
         self.y_offset = 150  # Décalage supplémentaire pour placer les éléments un peu plus haut
-
-        pygame.init()
 
         # Paramètres de l'écran
         self.screen_width = 500
@@ -28,18 +26,20 @@ class Interface:
         self.BUTTON_COLOR = (154, 208, 211)  # Couleur des boutons #9AD0D3
         self.BUTTON_TEXT_COLOR = self.BLACK
         # Police de caractère
-        self.font = pygame.font.Font("images/survivant.ttf", 16)
+        self.font = pygame.font.Font(None, 16)
 
         # Calcul de la position verticale de la dernière boîte de texte
         last_input_box_y = self.y_offset + 200 + (len(self.form_data) - 1) * 50
 
         # Coordonnées des boutons de connexion et d'inscription
         self.connexion_button = pygame.Rect(self.screen_width // 2 + 50, last_input_box_y + 50, 200, 40)  # Bouton Connexion
-        self.inscription_button = pygame.Rect(self.screen_width // 2 - 250, last_input_box_y + 50, 200, 40)  # Bouton Inscription
-        self.login_attempt = False
+        self.inscription_button = pygame.Rect(self.screen_width // 2 - 250, last_input_box_y + 50, 200, 40)  # Bouton Inscription        
         self.message_text = None  # Track the error message text
         self.message_timer = 0     # Timer to control the duration of error message display
         self.message_duration = 2000  # Duration to display the error message in milliseconds
+        self.login_attempt = False
+        self.register = False
+        self.clock = pygame.time.Clock()
 
     def render(self):
         # Dessiner l'image de fond
@@ -99,8 +99,10 @@ class Interface:
         self.active_field = None
         if self.connexion_button.collidepoint(position):
             self.login_attempt = True
+            print("Connexion")
         elif self.inscription_button.collidepoint(position):
-            self.get_identifier()
+            self.register = True
+            print("Inscription")
         
     def get_identifier(self):
         return self.form_data
@@ -109,13 +111,10 @@ class Interface:
         self.message_text = self.font.render(message, True, self.BLACK)
         self.message_timer = pygame.time.get_ticks()  # Start the timer
 
-    
-
     def run(self):
-        clock = pygame.time.Clock()
-        while True:
-            self.handle_events()
-            self.render()
-            pygame.display.flip()
-            clock.tick(60)
-            self.cursor_timer += 1
+        self.handle_events()
+        self.render()
+        pygame.display.flip()
+        self.clock.tick(60)
+        self.cursor_timer += 1
+
