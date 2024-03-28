@@ -44,7 +44,7 @@ class MainPage:
 
         # Update the display
         pygame.display.flip()
-
+    
     def display_transactions(self):
         # Display each transaction
         transaction_text = self.font.render("Transactions", True, self.BLACK)
