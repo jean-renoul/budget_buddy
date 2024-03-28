@@ -1,41 +1,58 @@
 from classes.Back.Connection import Connection
 from classes.Front.Login import Login
 from classes.Front.registration import Registration
+from classes.Back.Users import Users
+from classes.Front.MainPage import MainPage
 import pygame
 
 pygame.init()
 
-def login_page():
-    interface = Login()
-    while True:
-        interface.run()
+class Main:
 
-        if interface.login_attempt:
-            connection = Connection(interface.form_data["Lastname"], interface.form_data["Firstname"], interface.form_data["Email"], interface.form_data["Password"])
-            if connection.login():
-                interface.login_attempt = False
-                interface.message("Login successful")
-            else:
-                interface.message("Login failed")
-                interface.login_attempt = False
-        if interface.register:
-            interface.register = False
-            registration_page()
+    def __init__(self):
+        self.user = None
+        self.interface = None
 
-def registration_page():
-        interface = Registration()
+    def login_page(self):
+        self.interface = Login()
         while True:
-            interface.run()
-            if interface.back_to_login:
-                interface.back_to_login = False
-                login_page()
-            if interface.registration_attempt:
-                connection = Connection(interface.form_data["Lastname"], interface.form_data["Firstname"], interface.form_data["Email"], interface.form_data["Password"])
-                if connection.register():
-                    interface.registration_attempt = False
-                    interface.message("Registration successful")
-                else:
-                    interface.message(connection.error)
-                    interface.registration_attempt = False
+            self.interface.run()
 
-login_page()
+            if self.interface.login_attempt:
+                connection = Connection(self.interface.form_data["Lastname"], self.interface.form_data["Firstname"], self.interface.form_data["Email"], self.interface.form_data["Password"])
+                if connection.login():
+                    self.interface.login_attempt = False
+                    self.interface.message("Login successful")
+                    self.user = Users(self.interface.form_data["Lastname"], self.interface.form_data["Firstname"], self.interface.form_data["Email"], self.interface.form_data["Password"])
+                    self.user.update()
+                    self.main_page()
+                else:
+                    self.interface.message("Login failed")
+                    self.interface.login_attempt = False
+            if self.interface.register:
+                self.interface.register = False
+                self.registration_page()
+
+    def registration_page(self):
+            self.interface = Registration()
+            while True:
+                self.interface.run()
+                if self.interface.back_to_login:
+                    self.interface.back_to_login = False
+                    self.login_page()
+                if self.interface.registration_attempt:
+                    connection = Connection(self.interface.form_data["Lastname"], self.interface.form_data["Firstname"], self.interface.form_data["Email"], self.interface.form_data["Password"])
+                    if connection.register():
+                        self.interface.registration_attempt = False
+                        self.interface.message("Registration successful")
+                    else:
+                        self.interface.message(connection.error)
+                        self.interface.registration_attempt = False
+
+    def main_page(self):
+        self.interface = MainPage(self.user)
+        while True:
+            self.interface.run()
+
+main = Main()
+main.login_page()

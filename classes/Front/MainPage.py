@@ -1,51 +1,62 @@
 import pygame
 import sys
 
-# Initialisation de Pygame
-pygame.init()
+class MainPage:
+    def __init__(self, user):
+        self.user = user
+        self.transactions = user.transactions
 
-# Définition des couleurs
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 255)
+        # Initialize Pygame
+        pygame.init()
 
-# Définition de la taille de la fenêtre
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Banque App - Accueil")
+        # Screen settings
+        self.screen_width = 800
+        self.screen_height = 600
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        pygame.display.set_caption("Budget Buddy")
 
-# Définition de la police
-font = pygame.font.Font(None, 36)
+        # Fonts and colors
+        self.font = pygame.font.Font(None, 24)
+        self.BLACK = (0, 0, 0)
+        self.WHITE = (255, 255, 255)
+        self.COLOR1 = (237,190,164)
+        self.COLOR2 = (154,208,211)
 
-# Options du menu
-menu_options = [
-    "Consulter le solde",
-    "Quitter"
-]
+        # Clock
+        self.clock = pygame.time.Clock()
 
-# Position initiale du menu
-menu_x, menu_y = 20, 20
-menu_spacing = 40
+    def render(self):
+        # Clear the screen
+        self.screen.fill(self.WHITE)
 
-# Boucle principale
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    
-    # Effacer l'écran
-    screen.fill(WHITE)
-    
-    # Affichage du menu
-    for i, option in enumerate(menu_options):
-        text = font.render(option, True, BLACK)
-        text_rect = text.get_rect(x=menu_x, y=menu_y + i * menu_spacing)
-        screen.blit(text, text_rect)
-    
-    # Actualisation de l'écran
-    pygame.display.flip()
+        # Display transactions
+        self.display_transactions()
 
-# Quitter Pygame
-pygame.quit()
-sys.exit()
+        # Display account balance
+        balance_text = self.font.render(f"Balance: ${self.user.balance}", True, self.BLACK)
+        self.screen.blit(balance_text, (self.screen_width / 2 - 50, 20))
+
+        # Update the display
+        pygame.display.flip()
+
+    def display_transactions(self):
+        # Display each transaction
+        for i, transaction in enumerate(self.transactions):
+            text = self.font.render(f"{transaction}", True, self.BLACK)
+            self.screen.blit(text, (20, 50 + i * 30))  # Adjust the position as needed
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+    def run(self):
+        while True:
+            self.handle_events()
+            self.render()
+            self.clock.tick(60)
+
+if __name__ == "__main__":
+    main_page = MainPage()
+    main_page.run()
