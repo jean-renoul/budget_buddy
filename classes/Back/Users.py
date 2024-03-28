@@ -20,10 +20,8 @@ class Users:
         self.id = id[0][0]
 
     def set_transactions(self):
-        transactions = self.db.fetch("SELECT description, amount, date, type FROM transactions WHERE user_id = %s", (self.id,))
-        for transaction in transactions:
-            transaction = f"{transaction[0]} {transaction[1]} {transaction[2]} {transaction[3]}"
-            self.transactions.append(transaction)
+        transactions = self.db.fetch("SELECT name, description, amount, date, category, type FROM transactions WHERE user_id = %s", (self.id,))
+        self.transactions = transactions
 
     def update(self):
         self.set_id()

@@ -55,4 +55,9 @@ class Main:
             self.interface.run()
 
 main = Main()
-main.login_page()
+main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
+main.user.update()
+main.main_page()
+
+# To uncomment for the real application
+#main.login_page()
