@@ -31,9 +31,9 @@ class MainPage:
 
         # Clock
         self.clock = pygame.time.Clock()
-# Texte de bienvenue
-        self.welecome_text = self.font.render("Bienvenue sur l'application Budget Buddy", True, self.WHITE)
-        self.welecome_text_rect = self.welecome_text.get_rect(center=(self.screen_width // 2, 50))
+        # Texte de bienvenue
+        self.welcome_text = self.font.render("Bienvenue sur l'application Budget Buddy", True, self.WHITE)
+        self.welcome_text_rect = self.welcome_text.get_rect(center=(self.screen_width // 2, 50))
 
         # Chargement de l'image du logo du menu et redimensionnement
         self.menu_logo = pygame.image.load("images/Capture d'écran 2024-03-28 124959.png")  
@@ -42,11 +42,13 @@ class MainPage:
 
         # Options du menu
         self.menu_options = [
-            "Consulter le solde",
+            "Afficher les transactions",
             "Effectuer un virement",
             "Paramètres",
             "Quitter"
         ]
+
+        self.menu_option_rects = []
 
         # Position initiale du menu déroulant
         self.MENU_START_X, self.MENU_START_Y = 20, 70
@@ -55,6 +57,16 @@ class MainPage:
 
         # Détermine si le menu est affiché ou non
         self.menu_open = False
+        self.menu_transactions = False
+
+        # Remplir l'écran avec une couleur noire
+        self.screen.fill(self.BLACK)
+
+        # Affichage du texte de bienvenue
+        self.screen.blit(self.welcome_text, self.welcome_text_rect)
+
+        # Affichage du logo du menu
+        self.screen.blit(self.menu_logo, self.menu_logo_rect)
 
     def display_transactions(self):
         # Clear the screen
@@ -87,33 +99,41 @@ class MainPage:
         pygame.display.flip()
 
 
+    def display_menu(self):
+
+        # Remplir l'écran avec une couleur noire
+        self.screen.fill(self.BLACK)
+
+        # Affichage du texte de bienvenue
+        self.screen.blit(self.welcome_text, self.welcome_text_rect)
+
+        # Affichage du logo du menu
+        self.screen.blit(self.menu_logo, self.menu_logo_rect)
+
+        # Actualisation de l'écran
+        pygame.display.flip()
 
 
+    # Fonction pour afficher le menu
+    def display_open_menu(self):
+        # Remplir l'écran avec une couleur noire
+        self.screen.fill(self.BLACK)
 
-        # Fonction pour afficher le menu
-        def display_menu():
-            for i, option in enumerate(self.menu_options):
-                text = self.font.render(option, True, self.WHITE)
-                text_rect = text.get_rect(x=self.MENU_START_X, y=self.MENU_START_Y + i * self.MENU_SPACING)
-                pygame.draw.rect(self.screen, self.BLACK, (self.MENU_START_X, self.MENU_START_Y + i * self.MENU_SPACING, self.MENU_WIDTH, self.MENU_HEIGHT))
-                self.screen.blit(text, text_rect)
+        for i, option in enumerate(self.menu_options):
+            text = self.font.render(option, True, self.WHITE)
+            text_rect = text.get_rect(x=self.MENU_START_X, y=self.MENU_START_Y + i * self.MENU_SPACING)
+            self.menu_option_rects.append(text_rect)
+            pygame.draw.rect(self.screen, self.BLACK, (self.MENU_START_X, self.MENU_START_Y + i * self.MENU_SPACING, self.MENU_WIDTH, self.MENU_HEIGHT))
+            self.screen.blit(text, text_rect)        
 
+        # Affichage du texte de bienvenue
+        self.screen.blit(self.welcome_text, self.welcome_text_rect)
 
-            # Remplir l'écran avec une couleur noire
-            self.screen.fill(self.BLACK)
+        # Affichage du logo du menu
+        self.screen.blit(self.menu_logo, self.menu_logo_rect)
 
-            # Affichage du texte de bienvenue
-            self.screen.blit(self.welecome_text, self.welecome_text_rect)
-
-            # Affichage du logo du menu
-            self.screen.blit(self.menu_logo, self.menu_logo_rect)
-
-            # Affichage du menu déroulant si ouvert
-            if self.menu_open:
-                display_menu()
-
-            # Actualisation de l'écran
-            pygame.display.flip()
+        # Actualisation de l'écran
+        pygame.display.flip()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -125,15 +145,30 @@ class MainPage:
                     self.scroll_offset = max(0, self.scroll_offset - 1)
                 elif event.button == 5:  # Scroll down
                     self.scroll_offset = min(len(self.transactions) - self.transactions_per_page, self.scroll_offset + 1)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
+                elif event.button == 1:  # Left mouse button
                     if self.menu_logo_rect.collidepoint(event.pos):
                         self.menu_open = not self.menu_open
+                    elif self.menu_open:
+                        for i, option_rect in enumerate(self.menu_option_rects):
+                            if option_rect.collidepoint(event.pos):
+                                if i == 0:  # If the first option is clicked
+                                    self.menu_transactions = True
+                                    self.menu_open = False
+                                    break  # No need to check further options
+
 
     def run(self):
         while True:
             self.handle_events()
-            self.display_transactions()
+            if self.menu_open == True:
+                self.display_open_menu()
+            elif self.menu_transactions == True:
+                self.display_transactions()
+            else:
+                self.display_menu()
             self.clock.tick(60)
+            # Affichage du menu déroulant si ouvert
+            
 
 if __name__ == "__main__":
     main_page = MainPage()
