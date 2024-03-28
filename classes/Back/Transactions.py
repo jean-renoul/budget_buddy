@@ -19,4 +19,4 @@ class TransactionManager:
 if __name__ == "__main__":
     transaction_manager = TransactionManager()
     # Exemple d'utilisation : ajout d'une transaction
-    transaction_manager.add_transaction(user_id=4, name="Shopping", description="Tacos", category="Food", amount=20.0, transaction_type="expense")
+    transaction_manager.add_transaction(user_id=4, name="Shopping", description="T-Shirt", category="Closes", amount=20.0, transaction_type="income")

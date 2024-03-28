@@ -12,13 +12,13 @@ BLUE = (0, 102, 204)
 # Définition de la taille de la fenêtre
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Accueil - Budget Buddy")
+pygame.display.set_caption("Accueil - Banque BNP Paribas")
 
 # Font pour le texte
 font = pygame.font.Font(None, 36)
 
 # Texte de bienvenue
-welcome_text = font.render("Bienvenue sur l'application Budget Buddy", True, WHITE)
+welcome_text = font.render("Bienvenue sur l'application Banque BNP Paribas", True, WHITE)
 welcome_text_rect = welcome_text.get_rect(center=(WIDTH // 2, 50))
 
 # Chargement de l'image du logo du menu et redimensionnement
@@ -28,7 +28,7 @@ menu_logo_rect = menu_logo.get_rect(x=20, y=20)
 
 # Options du menu
 menu_options = [
-    "Consulter le solde",
+    "Consulter le solde",f'r'
     "Effectuer un virement",
     "Paramètres",
     "Quitter"
