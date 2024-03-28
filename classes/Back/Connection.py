@@ -1,4 +1,4 @@
-from Db import Db
+from classes.Back.Db import Db
 from classes.Back.Users import Users
 import string
 
