@@ -31,21 +31,13 @@ class MainPage:
         # Clock
         self.clock = pygame.time.Clock()
 
-    def render(self):
+    def display_transactions(self):
         # Clear the screen
         self.screen.fill(self.COLOR1)
-
-        # Display transactions
-        self.display_transactions()
 
         # Display account balance
         balance_text = self.font.render(f"Balance: ${self.user.balance}", True, self.BLACK)
         self.screen.blit(balance_text, (self.screen_width / 2 - 50, 20))
-
-        # Update the display
-        pygame.display.flip()
-
-    def display_transactions(self):
         # Display each transaction
         transaction_text = self.font.render("Transactions", True, self.BLACK)
         self.screen.blit(transaction_text, (self.screen_width/2 - transaction_text.get_width()/2, 100))
@@ -66,6 +58,9 @@ class MainPage:
         bar_position = (self.scroll_offset / len(self.transactions)) * (self.screen_height - 160)
         pygame.draw.rect(self.screen, self.WHITE, (self.screen_width - 20, 130 + bar_position, 10, 40))
 
+        # Update the display
+        pygame.display.flip()
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -80,7 +75,7 @@ class MainPage:
     def run(self):
         while True:
             self.handle_events()
-            self.render()
+            self.display_transactions()
             self.clock.tick(60)
 
 if __name__ == "__main__":
