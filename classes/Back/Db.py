@@ -35,11 +35,5 @@ class Db:
         self.disconnect()
         return result
 
-    def is_connected(self):
-        if self.connection:
-            return self.connection.is_connected()
-        else:
-            return False
-
 if __name__ == "__main__":
     db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
