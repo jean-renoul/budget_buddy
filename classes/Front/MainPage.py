@@ -27,18 +27,21 @@ class MainPage:
 
         # Scroll settings
         self.scroll_offset = 0
-        self.transactions_per_page = 5
+        self.transactions_per_page = 7
 
         # Clock
         self.clock = pygame.time.Clock()
         # Texte de bienvenue
-        self.welcome_text = self.font.render("Bienvenue sur l'application Budget Buddy", True, self.WHITE)
+        self.welcome_text = self.font.render("Budget Buddy", True, self.BLACK)
         self.welcome_text_rect = self.welcome_text.get_rect(center=(self.screen_width // 2, 50))
 
         # Chargement de l'image du logo du menu et redimensionnement
         self.menu_logo = pygame.image.load("images/Capture d'écran 2024-03-28 124959.png")  
         self.menu_logo = pygame.transform.scale(self.menu_logo, (50, 50)) 
         self.menu_logo_rect = self.menu_logo.get_rect(x=20, y=20)
+
+        self.background_image = pygame.image.load("images/MainPage.png")
+        self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
 
         # Options du menu
         self.menu_options = [
@@ -58,23 +61,22 @@ class MainPage:
         # Détermine si le menu est affiché ou non
         self.menu_open = False
         self.menu_transactions = False
+        self.sort_by_amount = False
+        self.sort_by_date = False
+        self.sort_by_type = False
+        self.sort_by_category = False
 
-        # Remplir l'écran avec une couleur noire
-        self.screen.fill(self.BLACK)
+        self.BUTTON_WIDTH, self.BUTTON_HEIGHT = 120, 30
+        self.button_font = pygame.font.Font(None, 20)
+        self.button_color = self.BLUE
+        self.button_hover_color = self.GREEN
+        self.button_texts = ["Sort by Date", "Sort by Amount", "Sort by Type", "Sort by Category"]
+        self.button_rects = []
+        self.create_sort_buttons()
 
-        # Affichage du texte de bienvenue
-        self.screen.blit(self.welcome_text, self.welcome_text_rect)
-
-        # Affichage du logo du menu
-        self.screen.blit(self.menu_logo, self.menu_logo_rect)
-
-    def display_transactions(self):
+    def transactions_page(self):
         # Clear the screen
-        self.screen.fill(self.COLOR1)
-
-        # Display account balance
-        balance_text = self.font.render(f"Balance: ${self.user.balance}", True, self.BLACK)
-        self.screen.blit(balance_text, (self.screen_width / 2 - 50, 20))
+        self.screen.blit(self.background_image, (0, 0))
         # Display each transaction
         transaction_text = self.font.render("Transactions", True, self.BLACK)
         self.screen.blit(transaction_text, (self.screen_width/2 - transaction_text.get_width()/2, 100))
@@ -95,14 +97,35 @@ class MainPage:
         bar_position = (self.scroll_offset / len(self.transactions)) * (self.screen_height - 160)
         pygame.draw.rect(self.screen, self.WHITE, (self.screen_width - 20, 130 + bar_position, 10, 40))
 
+        # Display buttons
+        self.display_sort_buttons()
+        self.display_menu()
+
         # Update the display
         pygame.display.flip()
 
+    def create_sort_buttons(self):
+        
+        button_start_y = 350  # Adjust this value to set the starting position of buttons
+        for i, text in enumerate(self.button_texts):
+            button_rect = pygame.Rect((self.screen_width - self.BUTTON_WIDTH) // 2, button_start_y + i * (self.BUTTON_HEIGHT + 10), self.BUTTON_WIDTH, self.BUTTON_HEIGHT)
+            self.button_rects.append(button_rect)
+
+    def display_sort_buttons(self):
+
+        for i, rect in enumerate(self.button_rects):
+            pygame.draw.rect(self.screen, self.button_color, rect)
+            button_text = self.button_font.render(self.button_texts[i], True, self.WHITE)
+            text_rect = button_text.get_rect(center=rect.center)
+            self.screen.blit(button_text, text_rect)
+
+    def main_page(self):
+        self.screen.blit(self.background_image, (0, 0))
+        self.display_menu()
+        pygame.display.flip()
+        
 
     def display_menu(self):
-
-        # Remplir l'écran avec une couleur noire
-        self.screen.fill(self.BLACK)
 
         # Affichage du texte de bienvenue
         self.screen.blit(self.welcome_text, self.welcome_text_rect)
@@ -110,29 +133,20 @@ class MainPage:
         # Affichage du logo du menu
         self.screen.blit(self.menu_logo, self.menu_logo_rect)
 
-        # Actualisation de l'écran
-        pygame.display.flip()
-
 
     # Fonction pour afficher le menu
     def display_open_menu(self):
-        # Remplir l'écran avec une couleur noire
-        self.screen.fill(self.BLACK)
 
         for i, option in enumerate(self.menu_options):
             text = self.font.render(option, True, self.WHITE)
             text_rect = text.get_rect(x=self.MENU_START_X, y=self.MENU_START_Y + i * self.MENU_SPACING)
             self.menu_option_rects.append(text_rect)
             pygame.draw.rect(self.screen, self.BLACK, (self.MENU_START_X, self.MENU_START_Y + i * self.MENU_SPACING, self.MENU_WIDTH, self.MENU_HEIGHT))
-            self.screen.blit(text, text_rect)        
-
-        # Affichage du texte de bienvenue
-        self.screen.blit(self.welcome_text, self.welcome_text_rect)
+            self.screen.blit(text, text_rect)
 
         # Affichage du logo du menu
         self.screen.blit(self.menu_logo, self.menu_logo_rect)
 
-        # Actualisation de l'écran
         pygame.display.flip()
 
     def handle_events(self):
@@ -145,10 +159,12 @@ class MainPage:
                     self.scroll_offset = max(0, self.scroll_offset - 1)
                 elif event.button == 5:  # Scroll down
                     self.scroll_offset = min(len(self.transactions) - self.transactions_per_page, self.scroll_offset + 1)
+
                 elif event.button == 1:  # Left mouse button
                     if self.menu_logo_rect.collidepoint(event.pos):
                         self.menu_open = not self.menu_open
-                    elif self.menu_open:
+                        
+                    if self.menu_open:
                         for i, option_rect in enumerate(self.menu_option_rects):
                             if option_rect.collidepoint(event.pos):
                                 if i == 0:  # If the first option is clicked
@@ -156,18 +172,30 @@ class MainPage:
                                     self.menu_open = False
                                     break  # No need to check further options
 
+                    if self.menu_transactions == True:
+                        for i, button_rect in enumerate(self.button_rects):
+                            if button_rect.collidepoint(event.pos):
+                                if i == 0:
+                                    self.sort_by_date = True
+                                elif i == 1:
+                                    self.sort_by_amount = True
+                                elif i == 2:
+                                    self.sort_by_type = True
+                                elif i == 3:
+                                    self.sort_by_category = True
+
+
 
     def run(self):
-        while True:
-            self.handle_events()
-            if self.menu_open == True:
-                self.display_open_menu()
-            elif self.menu_transactions == True:
-                self.display_transactions()
-            else:
-                self.display_menu()
-            self.clock.tick(60)
-            # Affichage du menu déroulant si ouvert
+        self.handle_events()
+        if self.menu_open == True:
+            self.display_open_menu()
+        elif self.menu_transactions == True:
+            self.transactions_page()
+        else:
+            self.main_page()
+        self.clock.tick(60)
+        # Affichage du menu déroulant si ouvert
             
 
 if __name__ == "__main__":
