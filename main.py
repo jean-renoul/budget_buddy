@@ -54,6 +54,26 @@ class Main:
         while True:
             self.interface.run()
 
+            if self.interface.sort_by_amount == True:
+                self.user.sort_transactions_by_amount()
+                self.interface.sort_by_amount = False
+                self.interface.transactions = self.user.transactions
+
+            elif self.interface.sort_by_date == True:
+                self.user.sort_transactions_by_date()
+                self.interface.sort_by_date = False
+                self.interface.transactions = self.user.transactions
+
+            elif self.interface.sort_by_category == True:
+                self.user.sort_transactions_by_category()
+                self.interface.sort_by_category = False
+                self.interface.transactions = self.user.transactions
+
+            elif self.interface.sort_by_type == True:
+                self.user.sort_transactions_by_type()
+                self.interface.sort_by_type = False
+                self.interface.transactions = self.user.transactions
+
 main = Main()
 main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
 main.user.update()

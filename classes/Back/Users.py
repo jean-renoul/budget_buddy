@@ -23,9 +23,20 @@ class Users:
         transactions = self.db.fetch("SELECT name, description, amount, date, category, type FROM transactions WHERE user_id = %s", (self.id,))
         self.transactions = transactions
 
+    def sort_transactions_by_amount(self):
+        self.transactions = sorted(self.transactions, key=lambda x: x[2])
+
+    def sort_transactions_by_date(self):
+        self.transactions = sorted(self.transactions,reverse=True, key=lambda x: x[3])
+
+    def sort_transactions_by_category(self):
+        self.transactions = sorted(self.transactions, key=lambda x: x[4])
+
+    def sort_transactions_by_type(self):
+        self.transactions = sorted(self.transactions, key=lambda x: x[5])
+
     def update(self):
         self.set_id()
         self.set_user_balance()
         self.set_transactions()
-
 
