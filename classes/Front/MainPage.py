@@ -45,10 +45,10 @@ class MainPage:
 
         # Options du menu
         self.menu_options = [
-            "Accueil",
-            "Afficher les transactions",
-            "Effectuer un virement",
-            "Paramètres",
+            "Main page",
+            "Display transactions",
+            "Transfer money",
+            "Settings",
             "Quitter"
         ]
 
@@ -67,6 +67,7 @@ class MainPage:
         self.sort_by_date = False
         self.sort_by_type = False
         self.sort_by_category = False
+        self.add_transaction = False
 
         self.BUTTON_WIDTH, self.BUTTON_HEIGHT = 120, 30
         self.button_font = pygame.font.Font(None, 20)
@@ -75,6 +76,9 @@ class MainPage:
         self.button_texts = ["Sort by Date", "Sort by Amount", "Sort by Type", "Sort by Category"]
         self.button_rects = []
         self.transfer_data = {"name": "", "description": "", "category": "", "amount": "", "type": ""}
+        self.active_field = None
+        self.text_input = {name: False for name in self.transfer_data.keys()}
+        self.send_button = pygame.Rect(350, 500, 60, 50)
         self.create_sort_buttons()
 
     def transactions_page(self):
@@ -168,7 +172,29 @@ class MainPage:
         pygame.draw.rect(self.screen, self.COLOR2, (350, 400, 200, 30))  # Type input box
         self.screen.blit(type_input_text, (355, 405))
 
+        for name, value in self.transfer_data.items():
+            input_text = self.font.render(value, True, self.BLACK)
+            input_rect = pygame.Rect(350, 200 + list(self.transfer_data.keys()).index(name) * 50, 200, 30)
+            pygame.draw.rect(self.screen, self.COLOR2, input_rect)  # Input box
+            self.screen.blit(input_text, (input_rect.x + 5, input_rect.y + 5))
+
+        pygame.draw.rect(self.screen, self.COLOR2, self.send_button)
+        send_text = self.font.render("Send", True, self.BLACK)
+        self.screen.blit(send_text, (self.send_button.x + 10, self.send_button.y + 10))
+
         pygame.display.flip()
+
+    def check_input_boxes(self, position):
+        # Check if any input box is clicked, and set it as the active field
+        for name in self.transfer_data.keys():
+            input_box_rect = pygame.Rect(350, 200 + list(self.transfer_data.keys()).index(name) * 50, 200, 30)
+            if input_box_rect.collidepoint(position):
+                self.active_field = name
+                if not self.text_input[name]:
+                    self.transfer_data[name] = ""
+                    return
+        # If no input box is clicked, deactivate the active field
+        self.active_field = None
         
 
     def create_sort_buttons(self):
@@ -184,9 +210,7 @@ class MainPage:
             pygame.draw.rect(self.screen, self.button_color, rect)
             button_text = self.button_font.render(self.button_texts[i], True, self.WHITE)
             text_rect = button_text.get_rect(center=rect.center)
-            self.screen.blit(button_text, text_rect)
-
-    
+            self.screen.blit(button_text, text_rect)  
         
 
     def display_menu(self):
@@ -242,7 +266,6 @@ class MainPage:
                                     self.menu_open = False
                                     self.menu_transactions = False
 
-
                     if self.menu_transactions == True:
                         for i, button_rect in enumerate(self.button_rects):
                             if button_rect.collidepoint(event.pos):
@@ -255,7 +278,19 @@ class MainPage:
                                 elif i == 3:
                                     self.sort_by_category = True
 
+                    if self.menu_transfer == True:
+                        self.check_input_boxes(event.pos)
+                        if self.send_button.collidepoint(event.pos):
+                            # Send the transaction data to the server
+                            self.add_transaction = True
 
+            elif event.type == pygame.KEYDOWN and self.active_field:
+                # If an input box is active and a key is pressed, update the corresponding field in transfer_data
+                if event.key == pygame.K_BACKSPACE:
+                    self.transfer_data[self.active_field] = self.transfer_data[self.active_field][:-1]
+                else:
+                    self.transfer_data[self.active_field] += event.unicode
+                    self.text_input[self.active_field] = True
 
     def run(self):
         self.handle_events()
