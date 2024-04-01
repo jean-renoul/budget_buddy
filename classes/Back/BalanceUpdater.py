@@ -1,4 +1,4 @@
-from Db import Db
+from classes.Back.Db import Db
 
 class BalanceUpdater:
     def __init__(self):
@@ -7,9 +7,9 @@ class BalanceUpdater:
     def update_balance(self, user_id, amount, transaction_type):
         current_balance = self.get_user_balance(user_id)
         if transaction_type == 'expense':
-            new_balance = current_balance - amount
+            new_balance = float(current_balance) - float(amount)
         else:
-            new_balance = current_balance + amount
+            new_balance = float(current_balance) + float(amount)
         query = "UPDATE users SET balance = %s WHERE user_id = %s"
         params = (new_balance, user_id)
         self.db.executeQuery(query, params)
