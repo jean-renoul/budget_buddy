@@ -4,6 +4,8 @@ from classes.Front.registration import Registration
 from classes.Back.Users import Users
 from classes.Front.MainPage import MainPage
 from classes.Back.Transactions import Transactions
+from classes.Front.TransactionPage import TransactionPage
+from classes.Front.TransferPage import TransferPage
 import pygame
 
 pygame.init()
@@ -55,7 +57,28 @@ class Main:
         while True:
             self.interface.run()
 
-            if self.interface.sort_by_amount == True:
+            if self.interface.menu_transactions == True:
+                self.interface.menu_transactions = False
+                self.transaction_page()
+
+            elif self.interface.menu_transfer == True:
+                self.interface.menu_transfer = False
+                self.transfer_page()
+
+
+    def transaction_page(self):
+        self.interface = TransactionPage(self.user)
+        while True:
+            self.interface.run()
+            if self.interface.menu_transfer == True:
+                self.interface.menu_transfer = False
+                self.transfer_page()
+            
+            elif self.interface.welcome == True:
+                self.interface.welcome = False
+                self.main_page()
+
+            elif self.interface.sort_by_amount == True:
                 self.user.sort_transactions_by_amount()
                 self.interface.sort_by_amount = False
                 self.interface.transactions = self.user.transactions
@@ -74,6 +97,19 @@ class Main:
                 self.user.sort_transactions_by_type()
                 self.interface.sort_by_type = False
                 self.interface.transactions = self.user.transactions
+
+    def transfer_page(self):
+        self.interface = TransferPage(self.user)
+        while True:
+            self.interface.run()
+
+            if self.interface.menu_transactions == True:
+                self.interface.menu_transactions = False
+                self.transaction_page()
+
+            elif self.interface.welcome == True:
+                self.interface.welcome = False
+                self.main_page()
 
             elif self.interface.add_transaction == True:
                 transaction = Transactions(self.user.id, self.interface.transfer_data["name"], self.interface.transfer_data["description"], self.interface.transfer_data["category"], self.interface.transfer_data["amount"], self.interface.transfer_data["type"])
