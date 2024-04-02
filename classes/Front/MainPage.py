@@ -247,6 +247,14 @@ class MainPage:
                                     self.menu_transfer = False
                                 if i == 4:
                                     self.display_pie_chart()
+                                elif i == 5:
+                                    self.menu_transfer = False
+                                    self.menu_open = False
+                                    self.menu_transactions = False
+                                    self.welcome = False
+                                    self.menu_exit = True
+                                if self.menu_exit:
+                                    self.exit_page()    
 
     def display_pie_chart(self):
         self.pie_chart.draw()

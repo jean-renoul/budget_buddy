@@ -151,7 +151,13 @@ class Main:
             elif self.interface.menu_transfer == True:
                 self.interface.menu_transfer = False
                 self.transfer_page()
-                
+    def exit_page(self):
+        self.interface = MainPage(self.user)
+        while True:
+            self.interface.run()
+            if self.interface.menu_exit:
+                pygame.quit()
+                            
 
 main = Main()
 main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
