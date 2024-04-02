@@ -1,4 +1,3 @@
-import pygame
 import math
 import random
 from classes.Back.Db import Db
@@ -7,7 +6,6 @@ class PieChart:
     def __init__(self, user_id):
         self.user_id = user_id
         self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
-
 
     # Fonction pour récupérer les catégories, les valeurs et les types à partir de la base de données
     def get_categories_values_and_types(self):
@@ -25,6 +23,7 @@ class PieChart:
 
     # Dessiner le diagramme circulaire
     def draw(self):
+        import pygame
         pygame.init()
 
         # Définition de la palette de couleurs
@@ -58,8 +57,9 @@ class PieChart:
             # Afficher le titre
             screen.blit(title_surface, title_rect)
 
-            # Position et taille du cercle
-            circle_x, circle_y = screen_width // 2, screen_height // 2
+            # Position et taille du cercle (modifier circle_x)
+            circle_x = screen_width // 4  # Modifier la position du cercle vers la gauche
+            circle_y = screen_height // 2
             circle_radius = min(screen_width, screen_height) // 3
 
             # Initialiser l'angle de départ
@@ -84,7 +84,7 @@ class PieChart:
                 text = f"{category}: {value:.2f} EUR ({transaction_type})"
                 text_surface = font.render(text, True, color)  # Utiliser la même couleur que l'arc
                 text_rect = text_surface.get_rect()
-                text_rect.center = ((circle_x + circle_radius + 20 + screen_width) // 2, circle_y - circle_radius // 2 + i * 30)
+                text_rect.center = (circle_x + circle_radius + 150, circle_y - circle_radius // 2 + i * 30)  # Déplacer vers la droite
                 screen.blit(text_surface, text_rect)
 
             # Mettre à jour l'affichage
