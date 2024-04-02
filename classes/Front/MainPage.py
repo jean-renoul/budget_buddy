@@ -60,6 +60,7 @@ class MainPage:
         self.MENU_SPACING = 40
 
         # Détermine si le menu est affiché ou non
+        self.welcome = False
         self.menu_open = False
         self.menu_transactions = False
         self.menu_transfer = False
@@ -68,6 +69,9 @@ class MainPage:
         self.sort_by_type = False
         self.sort_by_category = False
         self.add_transaction = False
+        self.message_text = None  # Track the error message text
+        self.message_timer = 0     # Timer to control the duration of error message display
+        self.message_duration = 2000  # Duration to display the error message in milliseconds
 
         self.BUTTON_WIDTH, self.BUTTON_HEIGHT = 120, 30
         self.button_font = pygame.font.Font(None, 20)
@@ -85,41 +89,6 @@ class MainPage:
         self.notification_logo = pygame.transform.scale(self.notification_logo, (40, 40))
         self.notification_logo_rect = self.notification_logo.get_rect(x=self.screen_width - 60, y=self.screen_height - 60)
 
-    def transactions_page(self):
-        # Clear the screen
-        self.screen.blit(self.background_image, (0, 0))
-        # Display each transaction
-        transaction_text = self.font.render("Transactions", True, self.BLACK)
-        self.screen.blit(transaction_text, (self.screen_width/2 - transaction_text.get_width()/2, 100))
-
-        pygame.draw.rect(self.screen, self.BLACK, (self.screen_width/2 - 200, 120, 400, 2))
-        pygame.draw.rect(self.screen, self.COLOR2, (self.screen_width/2 - 300, 125, self.screen_width/2 + 200, 225))
-        pygame.draw.rect(self.screen, self.COLOR1, (self.screen_width/2 - 100, 125 + 225, 200, 160))
-
-        visible_transactions = self.transactions[self.scroll_offset:self.scroll_offset+self.transactions_per_page]
-        
-        for i, transaction in enumerate(visible_transactions):
-            if transaction[5] == "expense" or transaction[5] == "Expense":
-                transaction = f"-{transaction[2]}$ : {transaction[0]} ({transaction[1]}) ({transaction[3]}) category: {transaction[4]}"
-                text = self.font.render(f"{transaction}", True, self.RED)
-            elif transaction[5] == "income" or transaction[5] == "Income":
-                transaction = f"+{transaction[2]}$ : {transaction[0]} ({transaction[1]}) ({transaction[3]}) category: {transaction[4]}"
-                text = self.font.render(f"{transaction}", True, self.GREEN)
-            self.screen.blit(text, (self.screen_width/2 - text.get_width()/2, 130 + i * 30))  # Adjust the position as needed
-
-        # Draw scroll bar
-        pygame.draw.rect(self.screen, self.COLOR1, (self.screen_width - 20, 130, 10, self.screen_height - 160))
-        bar_position = (self.scroll_offset / len(self.transactions)) * (self.screen_height - 160)
-        pygame.draw.rect(self.screen, self.COLOR2, (self.screen_width - 20, 130 + bar_position, 10, 40))
-        
-        # Display buttons
-        self.display_sort_buttons()
-        self.display_menu()
-        if self.menu_open == True:
-            self.display_open_menu()
-
-        # Update the display
-        pygame.display.flip()
 
     def main_page(self):
         # Affichage de la page principale
@@ -138,93 +107,13 @@ class MainPage:
 
         pygame.display.flip()
 
-    def transfer_page(self):
-        # Affichage de la page de transfert
-        self.screen.blit(self.background_image, (0, 0))
-        self.display_menu()
-        if self.menu_open == True:
-            self.display_open_menu()
-
-        # Affichage des étiquettes du formulaire de transfert
-        name_label = self.font.render("Name:", True, self.BLACK)
-        name_rect = name_label.get_rect(x=200, y=200)
-        self.screen.blit(name_label, name_rect)
-
-        description_label = self.font.render("Description:", True, self.BLACK)
-        description_rect = description_label.get_rect(x=200, y=250)
-        self.screen.blit(description_label, description_rect)
-
-        category_label = self.font.render("Category:", True, self.BLACK)
-        category_rect = category_label.get_rect(x=200, y=300)
-        self.screen.blit(category_label, category_rect)
-
-        amount_label = self.font.render("Amount:", True, self.BLACK)
-        amount_rect = amount_label.get_rect(x=200, y=350)
-        self.screen.blit(amount_label, amount_rect)
-
-        type_label = self.font.render("Type:", True, self.BLACK)
-        type_rect = type_label.get_rect(x=200, y=400)
-        self.screen.blit(type_label, type_rect)
-
-        # Affichage des champs de saisie
-        name_input_text = self.font.render(self.transfer_data.get('name', ''), True, self.BLACK)
-        pygame.draw.rect(self.screen, self.COLOR2, (350, 200, 200, 30))  # Name input box
-        self.screen.blit(name_input_text, (355, 205))
-
-        description_input_text = self.font.render(self.transfer_data.get('description', ''), True, self.BLACK)
-        pygame.draw.rect(self.screen, self.COLOR2, (350, 250, 200, 30))  # Description input box
-        self.screen.blit(description_input_text, (355, 255))
-
-        category_input_text = self.font.render(self.transfer_data.get('category', ''), True, self.BLACK)
-        pygame.draw.rect(self.screen, self.COLOR2, (350, 300, 200, 30))  # Category input box
-        self.screen.blit(category_input_text, (355, 305))
-
-        amount_input_text = self.font.render(str(self.transfer_data.get('amount', '')), True, self.BLACK)
-        pygame.draw.rect(self.screen, self.COLOR2, (350, 350, 200, 30))  # Amount input box
-        self.screen.blit(amount_input_text, (355, 355))
-
-        type_input_text = self.font.render(self.transfer_data.get('type', ''), True, self.BLACK)
-        pygame.draw.rect(self.screen, self.COLOR2, (350, 400, 200, 30))  # Type input box
-        self.screen.blit(type_input_text, (355, 405))
-
-        for name, value in self.transfer_data.items():
-            input_text = self.font.render(value, True, self.BLACK)
-            input_rect = pygame.Rect(350, 200 + list(self.transfer_data.keys()).index(name) * 50, 200, 30)
-            pygame.draw.rect(self.screen, self.COLOR2, input_rect)  # Input box
-            self.screen.blit(input_text, (input_rect.x + 5, input_rect.y + 5))
-
-        pygame.draw.rect(self.screen, self.COLOR2, self.send_button)
-        send_text = self.font.render("Send", True, self.BLACK)
-        self.screen.blit(send_text, (self.send_button.x + 10, self.send_button.y + 10))
-
-        pygame.display.flip()
-
-    def check_input_boxes(self, position):
-        # Vérifie si une boîte de saisie est cliquée et la définit comme champ actif
-        for name in self.transfer_data.keys():
-            input_box_rect = pygame.Rect(350, 200 + list(self.transfer_data.keys()).index(name) * 50, 200, 30)
-            if input_box_rect.collidepoint(position):
-                self.active_field = name
-                if not self.text_input[name]:
-                    self.transfer_data[name] = ""
-                    return
-        # Si aucune boîte de saisie n'est cliquée, désactive le champ actif
-        self.active_field = None
-
     def create_sort_buttons(self):
         # Crée les boutons de tri
         button_start_y = 350  # Ajustez cette valeur pour définir la position de départ des boutons
         for i, text in enumerate(self.button_texts):
             button_rect = pygame.Rect((self.screen_width - self.BUTTON_WIDTH) // 2, button_start_y + i * (self.BUTTON_HEIGHT + 10), self.BUTTON_WIDTH, self.BUTTON_HEIGHT)
-            self.button_rects.append(button_rect)
-
-    def display_sort_buttons(self):
-        # Affiche les boutons de tri
-        for i, rect in enumerate(self.button_rects):
-            pygame.draw.rect(self.screen, self.button_color, rect)
-            button_text = self.button_font.render(self.button_texts[i], True, self.WHITE)
-            text_rect = button_text.get_rect(center=rect.center)
-            self.screen.blit(button_text, text_rect)
+            self.button_rects.append(button_rect)    
+        
 
     def display_menu(self):
         # Affiche le texte de bienvenue et le logo du menu
@@ -246,12 +135,8 @@ class MainPage:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 4:  # Scroll up
-                    self.scroll_offset = max(0, self.scroll_offset - 1)
-                elif event.button == 5:  # Scroll down
-                    self.scroll_offset = min(len(self.transactions) - self.transactions_per_page, self.scroll_offset + 1)
 
-                elif event.button == 1:  # Left mouse button
+                if event.button == 1:  # Left mouse button
                     if self.menu_logo_rect.collidepoint(event.pos):
                         self.menu_open = not self.menu_open
                         
@@ -262,51 +147,25 @@ class MainPage:
                                     self.menu_open = False
                                     self.menu_transactions = False
                                     self.menu_transfer = False
+                                    self.welcome = True
                                 if i == 1:  # If the first option is clicked
                                     self.menu_transactions = True
                                     self.menu_open = False
                                     self.menu_transfer = False
-
+                                    self.welcome = False
                                 if i == 2:
                                     self.menu_transfer = True
                                     self.menu_open = False
                                     self.menu_transactions = False
+                                    self.welcome = False
 
-                    if self.menu_transactions == True:
-                        for i, button_rect in enumerate(self.button_rects):
-                            if button_rect.collidepoint(event.pos):
-                                if i == 0:
-                                    self.sort_by_date = True
-                                elif i == 1:
-                                    self.sort_by_amount = True
-                                elif i == 2:
-                                    self.sort_by_type = True
-                                elif i == 3:
-                                    self.sort_by_category = True
+    def message(self, message):
+        self.message_text = self.font.render(message, True, self.BLACK)
+        self.message_timer = pygame.time.get_ticks()  # Start the timer
 
-                    if self.menu_transfer == True:
-                        self.check_input_boxes(event.pos)
-                        if self.send_button.collidepoint(event.pos):
-                            # Envoie les données de la transaction au serveur
-                            self.add_transaction = True
-
-            elif event.type == pygame.KEYDOWN and self.active_field:
-                # Si une boîte de saisie est active et qu'une touche est pressée, met à jour le champ correspondant dans transfer_data
-                if event.key == pygame.K_BACKSPACE:
-                    self.transfer_data[self.active_field] = self.transfer_data[self.active_field][:-1]
-                else:
-                    self.transfer_data[self.active_field] += event.unicode
-                    self.text_input[self.active_field] = True
-
-    
     def run(self):
         self.handle_events()
-        if self.menu_transactions == True:
-            self.transactions_page()
-        elif self.menu_transfer == True:
-            self.transfer_page()
-        else:
-            self.main_page()
+        self.main_page()
         self.clock.tick(60)
 
     def draw_graph(self):
