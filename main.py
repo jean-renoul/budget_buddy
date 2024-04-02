@@ -7,6 +7,7 @@ from classes.Back.Transactions import Transactions
 from classes.Front.TransactionPage import TransactionPage
 from classes.Front.TransferPage import TransferPage
 from classes.Back.Notification import Notification
+from classes.Front.BankProfile import BankProfile
 import pygame
 
 pygame.init()
@@ -66,6 +67,10 @@ class Main:
                 self.interface.menu_transfer = False
                 self.transfer_page()
 
+            elif self.interface.menu_profile == True:
+                self.interface.menu_profile = False
+                self.profile_page()
+
 
     def transaction_page(self):
         self.interface = TransactionPage(self.user)
@@ -78,6 +83,10 @@ class Main:
             elif self.interface.welcome == True:
                 self.interface.welcome = False
                 self.main_page()
+
+            elif self.interface.menu_profile == True:
+                self.interface.menu_profile = False
+                self.profile_page()
 
             elif self.interface.sort_by_amount == True:
                 self.user.sort_transactions_by_amount()
@@ -112,6 +121,10 @@ class Main:
                 self.interface.welcome = False
                 self.main_page()
 
+            elif self.interface.menu_profile == True:
+                self.interface.menu_profile = False
+                self.profile_page()
+
             elif self.interface.add_transaction == True:
                 transaction = Transactions(self.user.id, self.interface.transfer_data["name"], self.interface.transfer_data["description"], self.interface.transfer_data["category"], self.interface.transfer_data["amount"], self.interface.transfer_data["type"])
                 print (transaction.user_id, transaction.name, transaction.description, transaction.category, transaction.amount, transaction.transaction_type)
@@ -121,6 +134,23 @@ class Main:
                 notification = Notification("Transaction added", "Your transaction has been added successfully")
                 notification.send()
                 self.interface.add_transaction = False
+
+    def profile_page(self):
+        self.interface = BankProfile(self.user)
+        while True:
+            self.interface.run()
+
+            if self.interface.menu_transactions == True:
+                self.interface.menu_transactions = False
+                self.transaction_page()
+
+            elif self.interface.welcome == True:
+                self.interface.welcome = False
+                self.main_page()
+
+            elif self.interface.menu_transfer == True:
+                self.interface.menu_transfer = False
+                self.transfer_page()
                 
 
 main = Main()
@@ -128,5 +158,5 @@ main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
 main.user.update()
 main.main_page()
 
-# To uncomment for the real application
+# To uncomment for the real application + comment the last 3 lines
 #main.login_page()

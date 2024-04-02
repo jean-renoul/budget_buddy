@@ -117,6 +117,12 @@ class TransferPage(MainPage):
                                     self.menu_transfer = True
                                     self.menu_open = False
                                     self.menu_transactions = False
+                                if i == 3:
+                                    self.menu_profile = True
+                                    self.menu_open = False
+                                    self.menu_transactions = False
+                                    self.welcome = False
+                                    self.menu_transfer = False
 
                     if self.menu_transfer == True:
                         self.check_input_boxes(event.pos)

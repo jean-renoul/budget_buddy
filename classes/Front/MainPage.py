@@ -24,6 +24,7 @@ class MainPage:
         self.GREEN = (0, 100, 0)
         self.RED = (255, 0, 0)
         self.BLUE = (0, 102, 204)
+        self.GREY = (200, 200, 200)
 
         # Scroll settings
         self.scroll_offset = 0
@@ -69,6 +70,7 @@ class MainPage:
         self.sort_by_type = False
         self.sort_by_category = False
         self.add_transaction = False
+        self.menu_profile = False
         self.message_text = None  # Track the error message text
         self.message_timer = 0     # Timer to control the duration of error message display
         self.message_duration = 2000  # Duration to display the error message in milliseconds
@@ -144,20 +146,29 @@ class MainPage:
                         for i, option_rect in enumerate(self.menu_option_rects):
                             if option_rect.collidepoint(event.pos):
                                 if i == 0:
+                                    self.welcome = True
                                     self.menu_open = False
                                     self.menu_transactions = False
                                     self.menu_transfer = False
-                                    self.welcome = True
+                                    self.menu_profile = False                                    
                                 if i == 1:  # If the first option is clicked
                                     self.menu_transactions = True
                                     self.menu_open = False
                                     self.menu_transfer = False
                                     self.welcome = False
+                                    self.menu_profile = False
                                 if i == 2:
                                     self.menu_transfer = True
                                     self.menu_open = False
                                     self.menu_transactions = False
                                     self.welcome = False
+                                    self.menu_profile = False
+                                if i == 3:
+                                    self.menu_profile = True
+                                    self.menu_open = False
+                                    self.menu_transactions = False
+                                    self.welcome = False
+                                    self.menu_transfer = False
 
     def message(self, message):
         self.message_text = self.font.render(message, True, self.BLACK)
