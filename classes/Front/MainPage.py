@@ -70,6 +70,9 @@ class MainPage:
         self.sort_by_type = False
         self.sort_by_category = False
         self.add_transaction = False
+        self.message_text = None  # Track the error message text
+        self.message_timer = 0     # Timer to control the duration of error message display
+        self.message_duration = 2000  # Duration to display the error message in milliseconds
 
         self.BUTTON_WIDTH, self.BUTTON_HEIGHT = 120, 30
         self.button_font = pygame.font.Font(None, 20)
@@ -155,6 +158,10 @@ class MainPage:
                                     self.welcome = False
                                     self.menu_exit = True
                                
+
+    def message(self, message):
+        self.message_text = self.font.render(message, True, self.BLACK)
+        self.message_timer = pygame.time.get_ticks()  # Start the timer
 
     def run(self):
         self.handle_events()
