@@ -10,7 +10,10 @@ class Users:
         self.balance = balance
         self.transactions = []
         self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
-
+    
+    def get_balance(self):
+        return self.balance
+    
     def set_user_balance(self):
         balance = self.db.fetch("SELECT balance FROM users WHERE email = %s", (self.email,))
         self.balance = balance[0][0]
@@ -35,9 +38,15 @@ class Users:
     def sort_transactions_by_type(self):
         self.transactions = sorted(self.transactions, key=lambda x: x[5])
 
+    def change_password(self, old_password, new_password):
+        if self.password == old_password:
+            self.password = new_password
+            self.db.executeQuery("UPDATE users SET password = %s WHERE email = %s", (self.password, self.email))
+            return True
+        else:
+            return False  
+
     def update(self):
         self.set_id()
         self.set_user_balance()
         self.set_transactions()
-
-

@@ -78,11 +78,16 @@ class TransactionPage(MainPage):
                                     self.menu_transactions = True
                                     self.menu_open = False
                                     self.menu_transfer = False
-
                                 if i == 2:
                                     self.menu_transfer = True
                                     self.menu_open = False
                                     self.menu_transactions = False
+                                if i == 3:
+                                    self.menu_profile = True
+                                    self.menu_open = False
+                                    self.menu_transactions = False
+                                    self.welcome = False
+                                    self.menu_transfer = False
 
                     if self.menu_transactions == True:
                         for i, button_rect in enumerate(self.button_rects):

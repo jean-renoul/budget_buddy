@@ -1,14 +1,15 @@
-import sys
+import pygame
 from classes.Back.Connection import Connection
 from classes.Front.Login import Login
-from classes.Front.Registration import Registration
+from classes.Front.registration import Registration
 from classes.Back.Users import Users
 from classes.Front.MainPage import MainPage
 from classes.Back.Transactions import Transactions
 from classes.Front.TransactionPage import TransactionPage
 from classes.Front.TransferPage import TransferPage
 from classes.Back.Notification import Notification
-import pygame
+from classes.Front.BankProfile import BankProfile
+from classes.Back.PieChart import PieChart
 
 pygame.init()
 
@@ -39,20 +40,20 @@ class Main:
                 self.registration_page()
 
     def registration_page(self):
-            self.interface = Registration()
-            while True:
-                self.interface.run()
-                if self.interface.back_to_login:
-                    self.interface.back_to_login = False
-                    self.login_page()
-                if self.interface.registration_attempt:
-                    connection = Connection(self.interface.form_data["Lastname"], self.interface.form_data["Firstname"], self.interface.form_data["Email"], self.interface.form_data["Password"])
-                    if connection.register():
-                        self.interface.registration_attempt = False
-                        self.interface.message("Registration successful")
-                    else:
-                        self.interface.message(connection.error)
-                        self.interface.registration_attempt = False
+        self.interface = Registration()
+        while True:
+            self.interface.run()
+            if self.interface.back_to_login:
+                self.interface.back_to_login = False
+                self.login_page()
+            if self.interface.registration_attempt:
+                connection = Connection(self.interface.form_data["Lastname"], self.interface.form_data["Firstname"], self.interface.form_data["Email"], self.interface.form_data["Password"])
+                if connection.register():
+                    self.interface.registration_attempt = False
+                    self.interface.message("Registration successful")
+                else:
+                    self.interface.message(connection.error)
+                    self.interface.registration_attempt = False
 
     def main_page(self):
         self.interface = MainPage(self.user)
@@ -67,6 +68,9 @@ class Main:
                 self.interface.menu_transfer = False
                 self.transfer_page()
 
+            elif self.interface.menu_profile == True:
+                self.interface.menu_profile = False
+                self.profile_page()
 
     def transaction_page(self):
         self.interface = TransactionPage(self.user)
@@ -79,6 +83,10 @@ class Main:
             elif self.interface.welcome == True:
                 self.interface.welcome = False
                 self.main_page()
+
+            elif self.interface.menu_profile == True:
+                self.interface.menu_profile = False
+                self.profile_page()
 
             elif self.interface.sort_by_amount == True:
                 self.user.sort_transactions_by_amount()
@@ -113,6 +121,10 @@ class Main:
                 self.interface.welcome = False
                 self.main_page()
 
+            elif self.interface.menu_profile == True:
+                self.interface.menu_profile = False
+                self.profile_page()
+
             elif self.interface.add_transaction == True:
                 transaction = Transactions(self.user.id, self.interface.transfer_data["name"], self.interface.transfer_data["description"], self.interface.transfer_data["category"], self.interface.transfer_data["amount"], self.interface.transfer_data["type"])
                 print (transaction.user_id, transaction.name, transaction.description, transaction.category, transaction.amount, transaction.transaction_type)
@@ -123,19 +135,26 @@ class Main:
                 notification.send()
                 self.interface.add_transaction = False
 
-    def exit_page(self):
-        self.interface = Main(self)
+    def profile_page(self):
+        self.interface = BankProfile(self.user)
         while True:
             self.interface.run()
-            if self.interface.menu_exit:
-                pygame.quit()
-                sys.exit()
+
+            if self.interface.menu_transactions == True:
+                self.interface.menu_transactions = False
+                self.transaction_page()
+
+            elif self.interface.welcome == True:
+                self.interface.welcome = False
+                self.main_page()
+
+            elif self.interface.menu_transfer == True:
+                self.interface.menu_transfer = False
+                self.transfer_page()
                 
 
 main = Main()
 main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
 main.user.update()
 main.main_page()
-
-# To uncomment for the real application
 #main.login_page()
