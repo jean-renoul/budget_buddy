@@ -151,7 +151,19 @@ class Main:
             elif self.interface.menu_transfer == True:
                 self.interface.menu_transfer = False
                 self.transfer_page()
-                
+
+            elif self.interface.password_modification == True:
+                self.interface.password_modification = False
+                connection = Connection(self.user.last_name, self.user.first_name, self.user.email, self.interface.new_password)
+                if connection.password_verification():
+                    if self.user.change_password(self.interface.old_password, self.interface.new_password) == True:
+                        self.user.update()
+                        self.interface.message("Password changed successfully")
+                    else:
+                        self.interface.message("You didn't enter your correct password")
+                else:
+                    self.interface.message(connection.error)
+                        
 
 main = Main()
 main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
