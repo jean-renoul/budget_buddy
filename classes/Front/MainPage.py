@@ -64,6 +64,7 @@ class MainPage:
         self.menu_open = False
         self.menu_transactions = False
         self.menu_transfer = False
+        self.menu_exit = False
         self.sort_by_amount = False
         self.sort_by_date = False
         self.sort_by_type = False
@@ -125,11 +126,9 @@ class MainPage:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-
                 if event.button == 1:  # Left mouse button
                     if self.menu_logo_rect.collidepoint(event.pos):
                         self.menu_open = not self.menu_open
-                        
                     if self.menu_open:
                         for i, option_rect in enumerate(self.menu_option_rects):
                             if option_rect.collidepoint(event.pos):
@@ -138,16 +137,24 @@ class MainPage:
                                     self.menu_transactions = False
                                     self.menu_transfer = False
                                     self.welcome = True
-                                if i == 1:  # If the first option is clicked
+                                elif i == 1:
                                     self.menu_transactions = True
                                     self.menu_open = False
                                     self.menu_transfer = False
                                     self.welcome = False
-                                if i == 2:
+                                elif i == 2:
                                     self.menu_transfer = True
                                     self.menu_open = False
                                     self.menu_transactions = False
                                     self.welcome = False
+                                elif i == 4:
+                                    self.main_page = False
+                                    self.menu_transfer = False
+                                    self.menu_open = False
+                                    self.menu_transactions = False
+                                    self.welcome = False
+                                    self.menu_exit = True
+                               
 
     def run(self):
         self.handle_events()
@@ -157,5 +164,6 @@ class MainPage:
             
 
 if __name__ == "__main__":
-    main_page = MainPage()
+    # Ajouter une instance de User factice pour le test
+    main_page = MainPage(user=None)
     main_page.run()

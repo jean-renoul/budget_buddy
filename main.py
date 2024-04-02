@@ -1,3 +1,4 @@
+import sys
 from classes.Back.Connection import Connection
 from classes.Front.Login import Login
 from classes.Front.registration import Registration
@@ -119,6 +120,14 @@ class Main:
                 self.user.update()
                 print (f"User balance after update : {self.user.balance}")
                 self.interface.add_transaction = False
+
+    def exit_page(self):
+        self.interface = Main(self)
+        while True:
+            self.interface.run()
+            if self.interface.menu_exit:
+                pygame.quit()
+                sys.exit()
                 
 
 main = Main()
