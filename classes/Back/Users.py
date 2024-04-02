@@ -38,6 +38,14 @@ class Users:
     def sort_transactions_by_type(self):
         self.transactions = sorted(self.transactions, key=lambda x: x[5])
 
+    def change_password(self, old_password, new_password):
+        if self.password == old_password:
+            self.password = new_password
+            self.db.executeQuery("UPDATE users SET password = %s WHERE email = %s", (self.password, self.email))
+            return True
+        else:
+            return False  
+
     def update(self):
         self.set_id()
         self.set_user_balance()
