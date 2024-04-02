@@ -1,11 +1,12 @@
 from classes.Back.Connection import Connection
 from classes.Front.Login import Login
-from classes.Front.registration import Registration
+from classes.Front.Registration import Registration
 from classes.Back.Users import Users
 from classes.Front.MainPage import MainPage
 from classes.Back.Transactions import Transactions
 from classes.Front.TransactionPage import TransactionPage
 from classes.Front.TransferPage import TransferPage
+from classes.Back.Notification import Notification
 import pygame
 
 pygame.init()
@@ -117,7 +118,8 @@ class Main:
                 print (f"User balance before update : {self.user.balance}")
                 transaction.add_transaction()
                 self.user.update()
-                print (f"User balance after update : {self.user.balance}")
+                notification = Notification("Transaction added", "Your transaction has been added successfully")
+                notification.send()
                 self.interface.add_transaction = False
                 
 

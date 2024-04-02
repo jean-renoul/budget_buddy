@@ -65,6 +65,13 @@ class TransferPage(MainPage):
         send_text = self.font.render("Send", True, self.BLACK)
         self.screen.blit(send_text, (self.send_button.x + 10, self.send_button.y + 10))
 
+        if self.message_text:
+            self.screen.blit(self.message_text, (self.screen_width // 2 - self.message_text.get_width() // 2, 450))
+            # Check if the duration has elapsed
+            if pygame.time.get_ticks() - self.message_timer >= self.message_duration:
+                self.message_text = None  # Clear the error message
+
+
         pygame.display.flip()
 
     def check_input_boxes(self, position):
@@ -75,7 +82,7 @@ class TransferPage(MainPage):
                 self.active_field = name
                 if not self.text_input[name]:
                     self.transfer_data[name] = ""
-                    return
+                return
         # If no input box is clicked, deactivate the active field
         self.active_field = None
 
@@ -114,8 +121,20 @@ class TransferPage(MainPage):
                     if self.menu_transfer == True:
                         self.check_input_boxes(event.pos)
                         if self.send_button.collidepoint(event.pos):
-                            # Send the transaction data to the server
-                            self.add_transaction = True
+
+                            for data in self.transfer_data.values():
+                                if data == "":
+                                    self.message("Please fill in all fields")
+                                    break
+                                elif self.transfer_data['amount'].isdigit() == False:
+                                    self.message("Amount must be a number")
+                                    break
+                                elif self.transfer_data['type'] not in ['income', 'expense']:
+                                    self.message("Type must be either 'income' or 'expense'")
+                                    break
+                                else:                                
+                                    # Send the transaction data to the server
+                                    self.add_transaction = True
 
             elif event.type == pygame.KEYDOWN and self.active_field:
                 # If an input box is active and a key is pressed, update the corresponding field in transfer_data
