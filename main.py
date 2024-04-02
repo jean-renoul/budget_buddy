@@ -76,15 +76,6 @@ class Main:
                 self.interface.transactions = self.user.transactions
 
 
-            elif self.interface.add_transaction == True:
-                transaction = Transactions(self.user.id, self.interface.transfer_data["name"], self.interface.transfer_data["description"], self.interface.transfer_data["category"], self.interface.transfer_data["amount"], self.interface.transfer_data["type"])
-                print (transaction.user_id, transaction.name, transaction.description, transaction.category, transaction.amount, transaction.transaction_type)
-                print (f"User balance before update : {self.user.balance}")
-                transaction.add_transaction()
-                self.user.update()
-                print (f"User balance after update : {self.user.balance}")
-                self.interface.add_transaction = False
-                
 main = Main()
 main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
 main.user.update()

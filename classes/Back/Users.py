@@ -10,7 +10,10 @@ class Users:
         self.balance = balance
         self.transactions = []
         self.db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_budget-buddy")
-
+    
+    def get_balance(self):
+        return self.balance
+    
     def set_user_balance(self):
         balance = self.db.fetch("SELECT balance FROM users WHERE email = %s", (self.email,))
         self.balance = balance[0][0]

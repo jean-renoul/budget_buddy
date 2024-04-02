@@ -1,3 +1,4 @@
+
 from datetime import datetime
 from classes.Back.Db import Db
 from classes.Back.BalanceUpdater import BalanceUpdater
@@ -20,9 +21,9 @@ class Transactions:
         params = (self.user_id, self.name, self.description, self.category, self.amount, self.transaction_type, date)
         self.db.executeQuery(query, params)
         # Mettre à jour la balance de l'utilisateur
-        self.balance_updater.update_balance(user_id, amount, transaction_type)
+        self.balance_updater.update_balance(self.user_id, self.amount, self.transaction_type)
 
 if __name__ == "__main__":
     transaction_manager = Transactions()
     # Exemple d'utilisation : ajout d'une transaction
-    transaction_manager.add_transaction(user_id=4, name="Shopping", description="T-Shirt", category="Closes", amount=50.0, transaction_type="income")
+    transaction_manager.add_transaction(user_id=4, name="Shopping", description="Tacos", category="Food", amount=20.0, transaction_type="expense")
