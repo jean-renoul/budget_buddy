@@ -1,4 +1,5 @@
 import pygame
+from classes.Back.PieChart import PieChart
 import sys
 
 class MainPage:
@@ -122,21 +123,21 @@ class MainPage:
         pygame.display.flip()
 
     def main_page(self):
-        # Affichage de la page principale
         self.screen.blit(self.background_image, (0, 0))
         self.display_menu()
         if self.menu_open == True:
             self.display_open_menu()
 
-        # Affichage de la balance de l'utilisateur
         balance_text = self.font.render(f"Balance: {self.user.get_balance()}$", True, self.BLACK)
         balance_text_rect = balance_text.get_rect(center=(self.screen_width // 2, 150))
         self.screen.blit(balance_text, balance_text_rect)
         self.screen.blit(self.notification_logo, self.notification_logo_rect)
-        # Dessin du graphique
+        
+        # Dessin du graphique circulaire
         self.draw_graph()
 
         pygame.display.flip()
+
 
     def transfer_page(self):
         # Affichage de la page de transfert
@@ -213,7 +214,7 @@ class MainPage:
 
     def create_sort_buttons(self):
         # Crée les boutons de tri
-        button_start_y = 350  # Ajustez cette valeur pour définir la position de départ des boutons
+        button_start_y = 350  
         for i, text in enumerate(self.button_texts):
             button_rect = pygame.Rect((self.screen_width - self.BUTTON_WIDTH) // 2, button_start_y + i * (self.BUTTON_HEIGHT + 10), self.BUTTON_WIDTH, self.BUTTON_HEIGHT)
             self.button_rects.append(button_rect)
@@ -318,6 +319,11 @@ class MainPage:
         pygame.draw.rect(self.screen, self.BLUE, (100, 200, 600, 20))
         # Dessine le rectangle rempli pour la balance
         pygame.draw.rect(self.screen, self.GREEN, (100, 200, normalized_balance * 600, 20))
+    
+        # Dessine le graphique circulaire
+        #pie_chart = PieChart(self.user.id)
+        #pie_chart.draw()
+
 
 if __name__ == "__main__":
     main_page = MainPage()

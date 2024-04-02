@@ -12,7 +12,7 @@ db = Db("82.165.185.52", "budget-buddy", "database-budget-buddy", "jean-renoul_b
 
 # Utilisation de la méthode change_password
 user_id = 8
-old_password = "Aaaaaaaaaa1!"
-new_password = "iiiiiiiiiiiii1"
+old_password = "iiiiiiiiiiiii1"
+new_password = "NewPassword10"
 change_password(db, user_id, old_password, new_password)
      
