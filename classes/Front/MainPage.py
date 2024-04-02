@@ -4,7 +4,7 @@ import math
 import random
 from classes.Back.Db import Db
 from classes.Back.PieChart import PieChart
-
+from classes.Back.Diagram import Diagram
 class MainPage:
     def __init__(self, user):
         self.user = user
@@ -98,6 +98,11 @@ class MainPage:
         self.notification_logo_rect = self.notification_logo.get_rect(x=self.screen_width - 60, y=self.screen_height - 60)
 
         self.pie_chart = PieChart(self.user.id)
+        # Nouvelle variable d'état pour suivre si le graphique est affiché
+        self.displaying_pie_chart = False
+
+        # Définir le bouton "Display Pie Chart"
+        self.display_pie_chart_button = pygame.Rect(20, 500, 150, 30)
 
     def main_page(self):
         self.screen.blit(self.background_image, (0, 0))
@@ -110,9 +115,17 @@ class MainPage:
         self.screen.blit(balance_text, balance_text_rect)
         self.screen.blit(self.notification_logo, self.notification_logo_rect)
         
+        # Ajoutez un bouton pour afficher le graphique
+        pygame.draw.rect(self.screen, self.BLUE, self.display_pie_chart_button)
+        display_pie_chart_text = self.font.render("Display Pie Chart", True, self.WHITE)
+        display_pie_chart_text_rect = display_pie_chart_text.get_rect(center=self.display_pie_chart_button.center)
+        self.screen.blit(display_pie_chart_text, display_pie_chart_text_rect)
         
-        self.draw_graph()
+        # Affiche le graphique si l'état est activé
+        if self.displaying_pie_chart:
+            self.display_pie_chart()
 
+        
         pygame.display.flip()
 
     def transfer_page(self):
@@ -246,7 +259,8 @@ class MainPage:
                                     self.welcome = False
                                     self.menu_transfer = False
                                 if i == 4:
-                                    self.display_pie_chart()
+                                    # Active l'affichage du graphique
+                                    self.displaying_pie_chart = True
                                 elif i == 5:
                                     self.menu_transfer = False
                                     self.menu_open = False
@@ -254,7 +268,11 @@ class MainPage:
                                     self.welcome = False
                                     self.menu_exit = True
                                 if self.menu_exit:
-                                    self.exit_page()    
+                                    self.exit_page()
+                    
+                    # Vérifie si le bouton "Display Pie Chart" est cliqué
+                    if self.display_pie_chart_button.collidepoint(event.pos):
+                        self.displaying_pie_chart = not self.displaying_pie_chart
 
     def display_pie_chart(self):
         self.pie_chart.draw()

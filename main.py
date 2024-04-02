@@ -11,6 +11,7 @@ from classes.Back.Notification import Notification
 from classes.Front.BankProfile import BankProfile
 from classes.Back.PieChart import PieChart
 
+
 pygame.init()
 
 class Main:
@@ -157,7 +158,7 @@ class Main:
             self.interface.run()
             if self.interface.menu_exit:
                 pygame.quit()
-                            
+                sys.exit()            
 
 main = Main()
 main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
