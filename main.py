@@ -1,6 +1,6 @@
 from classes.Back.Connection import Connection
 from classes.Front.Login import Login
-from classes.Front.Registration import Registration
+from classes.Front.registration import Registration
 from classes.Back.Users import Users
 from classes.Front.MainPage import MainPage
 from classes.Back.Transactions import Transactions
