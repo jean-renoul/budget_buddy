@@ -105,7 +105,6 @@ class MainPage:
         # Create sort buttons
         self.create_sort_buttons()
 
-        # Notification logo settings
         # Initialize PieChart instance
         self.pie_chart = PieChart(self.user.id)
 
@@ -253,10 +252,7 @@ class MainPage:
                                     self.menu_transfer = True
                                 if i == 3:
                                     self.menu_profile = True
-                                    self.menu_open = False
-                                    self.menu_transactions = False
-                                    self.welcome = False
-                                    self.menu_transfer = False
+
                     if self.pie_chart_button_rect.collidepoint(event.pos):
                         self.display_pie_chart()
                     if self.diagram_button_rect.collidepoint(event.pos):
