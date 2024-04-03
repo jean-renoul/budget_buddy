@@ -81,6 +81,9 @@ class TransactionPage(MainPage):
                                     self.menu_transfer = True
                                 if i == 3:
                                     self.menu_profile = True
+                                if i == 4:
+                                    pygame.quit()
+                                    sys.exit()
 
                     if self.menu_transactions == True:
                         for i, button_rect in enumerate(self.button_rects):

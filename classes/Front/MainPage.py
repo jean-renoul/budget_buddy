@@ -252,6 +252,9 @@ class MainPage:
                                     self.menu_transfer = True
                                 if i == 3:
                                     self.menu_profile = True
+                                if i == 4:
+                                    pygame.quit()
+                                    sys.exit()
 
                     if self.pie_chart_button_rect.collidepoint(event.pos):
                         self.display_pie_chart()

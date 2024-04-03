@@ -128,6 +128,9 @@ class BankProfile(MainPage):
                                     self.menu_transactions = True
                                 if i == 2:
                                     self.menu_transfer = True
+                                if i == 4:
+                                    pygame.quit()
+                                    sys.exit()
 
                     if self.button_rect.collidepoint(event.pos):  # Check if the click is inside the button rectangle
                         self.show_change_password_fields = not self.show_change_password_fields

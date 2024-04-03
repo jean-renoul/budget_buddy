@@ -96,6 +96,9 @@ class TransferPage(MainPage):
                                     self.menu_transfer = True
                                 if i == 3:
                                     self.menu_profile = True
+                                if i == 4:
+                                    pygame.quit()
+                                    sys.exit()
 
                     if self.menu_transfer == True:
                         self.check_input_boxes(event.pos)
