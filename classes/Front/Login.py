@@ -79,7 +79,7 @@ class Login:
         pygame.draw.rect(self.screen, self.BUTTON_COLOR, self.inscription_button, border_radius=5)  # Registration Button
         conn_text = self.font.render("Connexion", True, self.BUTTON_TEXT_COLOR)
         self.screen.blit(conn_text, (self.connexion_button.x + 50, self.connexion_button.y + 10))
-        insc_text = self.font.render("Inscription", True, self.BUTTON_TEXT_COLOR)
+        insc_text = self.font.render("Sign-up", True, self.BUTTON_TEXT_COLOR)
         self.screen.blit(insc_text, (self.inscription_button.x + 50, self.inscription_button.y + 10))
         if self.message_text:
             self.screen.blit(self.message_text, (self.screen_width // 2 - self.message_text.get_width() // 2, 600))

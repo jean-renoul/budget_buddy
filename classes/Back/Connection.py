@@ -94,6 +94,9 @@ class Connection:
             query = "INSERT INTO users (lastname, firstname, email, password, balance) VALUES (%s, %s, %s, %s, %s)"
             params = (self.user.last_name, self.user.first_name, self.user.email, self.user.password, self.user.balance)
             self.db.executeQuery(query, params)
+            return True
+        else:
+            return False
 
     def login(self):
         query = "SELECT * FROM users WHERE lastname = %s AND firstname = %s AND email = %s AND password = %s"

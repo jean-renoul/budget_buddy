@@ -79,8 +79,8 @@ class Registration:
         pygame.draw.rect(self.screen, self.GREEN, (button_x + button_width + 20, self.screen_height - 100, button_width, button_height), border_radius=10)
 
         # Button text
-        create_account_text = self.font.render("Inscription", True, self.BUTTON_TEXT_COLOR)
-        return_text = self.font.render("Retour", True, self.BUTTON_TEXT_COLOR)
+        create_account_text = self.font.render("Sign_up", True, self.BUTTON_TEXT_COLOR)
+        return_text = self.font.render("Back", True, self.BUTTON_TEXT_COLOR)
         self.screen.blit(create_account_text, (button_x + (button_width - create_account_text.get_width()) // 2, self.screen_height - 100 + (button_height - create_account_text.get_height()) // 2))
         self.screen.blit(return_text, (button_x + button_width + 20 + (button_width - return_text.get_width()) // 2, self.screen_height - 100 + (button_height - return_text.get_height()) // 2))
 

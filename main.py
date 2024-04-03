@@ -1,7 +1,7 @@
 import pygame
 from classes.Back.Connection import Connection
 from classes.Front.Login import Login
-from classes.Front.registration import Registration
+from classes.Front.Registration import Registration
 from classes.Back.Users import Users
 from classes.Front.MainPage import MainPage
 from classes.Back.Transactions import Transactions
@@ -51,6 +51,9 @@ class Main:
                 if connection.register():
                     self.interface.registration_attempt = False
                     self.interface.message("Registration successful")
+                    self.user = Users(self.interface.form_data["Lastname"], self.interface.form_data["Firstname"], self.interface.form_data["Email"], self.interface.form_data["Password"])
+                    self.user.update()
+                    self.main_page()
                 else:
                     self.interface.message(connection.error)
                     self.interface.registration_attempt = False
@@ -166,7 +169,4 @@ class Main:
                         
 
 main = Main()
-main.user = Users("Doe", "John", "John.Doe@gmail.com", "Password10!")
-main.user.update()
-main.main_page()
-#main.login_page()
+main.login_page()
